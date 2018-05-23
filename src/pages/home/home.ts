@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { ToastController } from 'ionic-angular';
 import { ConnectivityProvider } from '../../providers/connectivity/connectivity';
+import { LoginProvider } from '../../providers/login/login';
 
 @Component({
   selector: 'page-home',
@@ -16,7 +17,8 @@ export class HomePage {
   constructor(
     public navCtrl: NavController,
     private toastController: ToastController,
-    private connectivityProvider: ConnectivityProvider
+    private connectivityProvider: ConnectivityProvider,
+    private loginProvider: LoginProvider
   ) {
 
   }
