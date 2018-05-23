@@ -11,6 +11,7 @@ import { HomePage } from '../pages/home/home';
 
 //providers
 import { ConnectivityProvider } from '../providers/connectivity/connectivity';
+import { LoginProvider } from '../providers/login/login';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { ConnectivityProvider } from '../providers/connectivity/connectivity';
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     ConnectivityProvider,
-    Network
+    Network,
+    LoginProvider
   ]
 })
 export class AppModule {}
