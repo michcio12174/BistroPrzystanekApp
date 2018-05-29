@@ -3,6 +3,7 @@ import { NavController } from 'ionic-angular';
 import { ToastController } from 'ionic-angular';
 import { ConnectivityProvider } from '../../providers/connectivity/connectivity';
 import { LoginProvider } from '../../providers/login/login';
+import { OrdersListPage } from "../orders-list/orders-list"
 
 @Component({
   selector: 'page-home',
@@ -12,7 +13,7 @@ export class HomePage {
 
   private username: string = "";
   private password: string = "";
-  private home = HomePage;
+  private pageAfterLogin = OrdersListPage;
 
   constructor(
     public navCtrl: NavController,
@@ -29,10 +30,9 @@ export class HomePage {
       //check if password and mail are not empty
       if (this.username != "" && this.password != "") {
         //attempting to log in with given credentials
-        //if (this.loginProvider.logIn(this.username, this.password)) this.loginSuccessfull();
+        if (this.loginProvider.logIn(this.username, this.password)) this.loginSuccessfull();
 
-        //else 
-        this.loginUnsuccessfull();
+        else this.loginUnsuccessfull();
       }
       //if passford or mail are empty
       else {
@@ -60,7 +60,7 @@ export class HomePage {
       duration: 4000
     });
     toast.present();
-    this.navCtrl.setRoot(this.home);
+    this.navCtrl.setRoot(this.pageAfterLogin);
   }
 
   //informuje, że logowanie się nie udało

@@ -9,6 +9,7 @@ import { HttpClientModule } from '@angular/common/http';
 //pages
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
+import { OrdersListPage } from '../pages/orders-list/orders-list';
 
 //providers
 import { ConnectivityProvider } from '../providers/connectivity/connectivity';
@@ -17,7 +18,8 @@ import { LoginProvider } from '../providers/login/login';
 @NgModule({
   declarations: [
     MyApp,
-    HomePage
+    HomePage,
+    OrdersListPage
   ],
   imports: [
     BrowserModule,
@@ -27,7 +29,8 @@ import { LoginProvider } from '../providers/login/login';
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    HomePage
+    HomePage,
+    OrdersListPage
   ],
   providers: [
     StatusBar,
