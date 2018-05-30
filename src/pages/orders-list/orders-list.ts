@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { SettingsPage } from '../../pages/settings/settings'
 
 @IonicPage()
 @Component({
@@ -8,11 +9,13 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class OrdersListPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  private settingsPage = SettingsPage;
+  constructor(
+    public navCtrl: NavController, 
+    public navParams: NavParams) {
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad OrdersListPage');
   }
-
 }

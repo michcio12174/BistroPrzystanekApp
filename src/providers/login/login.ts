@@ -1,13 +1,15 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { User } from '../../classes/user'
+import { Storage } from '@ionic/storage'
 
 @Injectable()
 export class LoginProvider {
 
   private url = 'https://jsonplaceholder.typicode.com';
 
-  constructor(public http: HttpClient) {
+  constructor(public http: HttpClient,
+    private storage: Storage) {
     console.log('Hello LoginProvider Provider');
   }
 
@@ -16,13 +18,26 @@ export class LoginProvider {
   logIn(mail: string, password: string): Promise<boolean> {
     let specificUrl: string = this.url + "/" + mail
 
-    return new Promise(resolve => {
-      this.http.get(this.url+'/users').subscribe(data => {
-        resolve(true);
-      }, err => {
-         console.log(err);
-      });
+    return this.http.get(this.url+'/users').toPromise().then(response => {
+      return true;
      });
+  }
+
+  //check if a logged user data is stored in the memory
+  isLoggedIn(): Promise<boolean>{
+    return this.storage.get("loggedSubject").then(response => {
+      //let subject: Subject = response as Subject;
+      //if (subject) {
+      //  this.currentlyLoggedSubject = subject;
+        return true;
+      //}
+      //else return false;
+    });
+  }
+
+  logOut(): void{
+    //this.currentlyLoggedSubject = null;
+    this.storage.remove("loggedSubject");
   }
 
 }
