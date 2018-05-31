@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { Product } from "../../classes/product"
 
 @IonicPage()
 @Component({
@@ -7,6 +8,8 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
   templateUrl: 'single-order.html',
 })
 export class SingleOrderPage {
+
+  orderedProducts: Product[];
 
   constructor(public navCtrl: NavController, public navParams: NavParams) {
   }

@@ -12,6 +12,7 @@ import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { OrdersListPage } from '../pages/orders-list/orders-list';
 import { SettingsPage } from '../pages/settings/settings';
+import { SingleOrderPage } from '../pages/single-order/single-order';
 
 //providers
 import { ConnectivityProvider } from '../providers/connectivity/connectivity';
@@ -22,7 +23,8 @@ import { LoginProvider } from '../providers/login/login';
     MyApp,
     HomePage,
     OrdersListPage,
-    SettingsPage
+    SettingsPage,
+    SingleOrderPage
   ],
   imports: [
     BrowserModule,
@@ -35,7 +37,8 @@ import { LoginProvider } from '../providers/login/login';
     MyApp,
     HomePage,
     OrdersListPage,
-    SettingsPage
+    SettingsPage,
+    SingleOrderPage
   ],
   providers: [
     StatusBar,
