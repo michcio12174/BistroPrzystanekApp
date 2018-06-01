@@ -1,5 +1,5 @@
 export class Product{
-    name:string;
-    cost:number;
-    typeID:number;
+    name:string = "stock";
+    cost:number = 1;
+    typeID:number = 1;
 }

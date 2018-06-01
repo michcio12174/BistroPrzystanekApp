@@ -11,19 +11,24 @@
     <ion-list>
   
       <ion-list-header>
-        Zamówienie
+        Zamówione
       </ion-list-header>
 
-      <ion-item>
-          <ion-label>Pizza 1</ion-label>
+      <ion-item *ngFor = "let product of orderedProducts">
+          <ion-label>{{product.name}}</ion-label>
+          <ion-label>{{product.cost | number : '1.2-2'}} zł</ion-label>
           
       </ion-item>
 
+      <ion-item>
+        <ion-label>Koszt zamówienia: {{sumOfPrices | number : '1.2-2'}} zł</ion-label>
+      </ion-item>
     </ion-list>
 
+    
   <ion-list text-center>
   
-    <button ion-button color="secondary" [round]="true"><ion-icon name="add"></ion-icon></button>
+    <button ion-button color="secondary" [round]="true" (click)="addOrder()"><ion-icon name="add"></ion-icon></button>
 
   </ion-list>
 </ion-content>
