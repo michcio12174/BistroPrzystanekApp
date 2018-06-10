@@ -1,43 +1,74 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { User } from '../../classes/user'
-import { Storage } from '@ionic/storage'
+import { Storage } from '@ionic/storage';
+import { AuthResponse } from '../../classes/authResponse';
+
+//TODO przechowywanie tokena
 
 @Injectable()
 export class LoginProvider {
 
-  private url = 'https://jsonplaceholder.typicode.com';
+  private url:string = 'https://vast-harbor-51468.herokuapp.com';
+  private tokenPath:string = '/oauth/token';
+  public currentlyLoggedUser: string;
+  public authResponse: AuthResponse;
 
   constructor(public http: HttpClient,
     private storage: Storage) {
-    console.log('Hello LoginProvider Provider');
   }
+
+  //Auth:
+  //type: object
+  //properties:
+  //  grant_type:
+  //    type: string
+  //    description: "Always type 'password'"
+  //  username:
+  //    type: string
+  //  password:
+  //    type: string
 
   //sprawdza czy użytkownik istnieje w bazie i czy hasło jest poprawne
   //jeśli tak, to zmienna klasy subject zostaje ustawiona na dane subjecta i zapisuje zalogowanego w pamięci
-  logIn(mail: string, password: string): Promise<boolean> {
-    let specificUrl: string = this.url + "/" + mail
+  logIn(enteredUsername: string, enteredPassword: string): Promise<boolean> {
+    let specificUrl: string = this.url + this.tokenPath;
 
-    return this.http.get(this.url+'/users').toPromise().then(response => {
-      return true;
+    let body = {
+      grant_type: 'password',
+      username: enteredUsername,
+      password: enteredPassword
+    };
+
+    return this.http.post(specificUrl, JSON.stringify(body)).toPromise()
+    .then(response => {
+        console.log(response);
+        
+        this.storage.set('loggedUser', enteredUsername); //zapisuję sobie dane urzytkownika
+
+        return true;
+     }).catch(error => {
+        console.log(error);
+       
+        return false;
      });
   }
 
   //check if a logged user data is stored in the memory
   isLoggedIn(): Promise<boolean>{
-    return this.storage.get("loggedSubject").then(response => {
-      //let subject: Subject = response as Subject;
-      //if (subject) {
-      //  this.currentlyLoggedSubject = subject;
+    return this.storage.get("loggedUser").then(response => {
+      if (response) {
+        console.log("here comes username red fro storage:");
+        console.log(response);
+        this.currentlyLoggedUser = response;
         return true;
-      //}
-      //else return false;
+      }
+      else return false;
     });
   }
 
   logOut(): void{
-    //this.currentlyLoggedSubject = null;
-    this.storage.remove("loggedSubject");
+    this.currentlyLoggedUser = null;
+    this.storage.remove("loggedUser");
   }
 
 }

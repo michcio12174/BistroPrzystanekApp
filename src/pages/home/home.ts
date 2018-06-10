@@ -30,9 +30,10 @@ export class HomePage {
       //check if password and mail are not empty
       if (this.username != "" && this.password != "") {
         //attempting to log in with given credentials
-        if (this.loginProvider.logIn(this.username, this.password)) this.loginSuccessfull();
-
-        else this.loginUnsuccessfull();
+        this.loginProvider.logIn(this.username, this.password).then(response =>{
+          if (response) this.loginSuccessfull();
+          else this.loginUnsuccessfull();
+        }) 
       }
       //if passford or mail are empty
       else {

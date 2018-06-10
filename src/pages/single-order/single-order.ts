@@ -36,6 +36,11 @@ export class SingleOrderPage {
     console.log('ionViewDidLoad SingleOrderPage');
   }
 
+  addProduct():void{
+
+    this.updateSum();
+  }
+
   addOrder():void{
 
   }
@@ -49,5 +54,4 @@ export class SingleOrderPage {
 
     this.sumOfPrices = tempSum;
   }
-
 }

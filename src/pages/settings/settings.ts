@@ -18,10 +18,6 @@ export class SettingsPage {
     public loginProvider: LoginProvider) {
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad SettingsPage');
-  }
-
   logOut():void{
     this.loginProvider.logOut();
     this.navCtrl.setRoot(this.homePage);
