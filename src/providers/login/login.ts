@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { AuthResponse } from '../../classes/authResponse';
@@ -8,12 +8,12 @@ import { AuthResponse } from '../../classes/authResponse';
 @Injectable()
 export class LoginProvider {
 
-  private url:string = 'https://vast-harbor-51468.herokuapp.com';
+  private url:string = 'https://vast-harbor-51468.herokuapp.com/v1';
   private tokenPath:string = '/oauth/token';
   public currentlyLoggedUser: string;
   public authResponse: AuthResponse;
 
-  constructor(public http: HttpClient,
+  constructor(private http: HttpClient,
     private storage: Storage) {
   }
 
@@ -33,13 +33,22 @@ export class LoginProvider {
   logIn(enteredUsername: string, enteredPassword: string): Promise<boolean> {
     let specificUrl: string = this.url + this.tokenPath;
 
-    let body = {
-      grant_type: 'password',
-      username: enteredUsername,
-      password: enteredPassword
-    };
+    let myHeaders = new HttpHeaders({
+      "Authorization": "Basic " + btoa('gop-client:bfjddf7$%534hdf##474sd&*nMdfWE3'),
+      //'Cache-Control': 'no-cache',
+      "Content-Type": "application/x-www-form-urlencoded"
+    })
 
-    return this.http.post(specificUrl, JSON.stringify(body)).toPromise()
+    console.log(myHeaders);
+    
+    let body = new HttpParams()
+      .set('grant_type', 'password')
+      .set('username', enteredUsername)
+      .set('password', enteredPassword);
+
+    console.log(body.toString());
+
+    return this.http.post(specificUrl, body.toString(), {headers:myHeaders}).toPromise()
     .then(response => {
         console.log(response);
         
