@@ -35,29 +35,25 @@ export class LoginProvider {
 
     let myHeaders = new HttpHeaders({
       "Authorization": "Basic " + btoa('gop-client:bfjddf7$%534hdf##474sd&*nMdfWE3'),
-      //'Cache-Control': 'no-cache',
       "Content-Type": "application/x-www-form-urlencoded"
     })
 
-    console.log(myHeaders);
-    
     let body = new HttpParams()
       .set('grant_type', 'password')
       .set('username', enteredUsername)
       .set('password', enteredPassword);
 
-    console.log(body.toString());
-
-    return this.http.post(specificUrl, body.toString(), {headers:myHeaders}).toPromise()
+    return this.http.post<AuthResponse>(specificUrl, body.toString(), {headers:myHeaders}).toPromise()
     .then(response => {
         console.log(response);
         
         this.storage.set('loggedUser', enteredUsername); //zapisuję sobie dane urzytkownika
+        this.storage.set('currentToken', response); //zapisuję otrzymany token
 
         return true;
+        
      }).catch(error => {
         console.log(error);
-       
         return false;
      });
   }
