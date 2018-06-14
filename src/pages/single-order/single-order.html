@@ -8,27 +8,61 @@
 
 
 <ion-content padding>
-    <ion-list>
-  
-      <ion-list-header>
-        Zamówione
-      </ion-list-header>
+  <ion-list text-center *ngIf = '!tableWasChosen'>
 
-      <ion-item *ngFor = "let product of orderedProducts">
-          <ion-label>{{product.name}}</ion-label>
-          <ion-label>{{product.cost | number : '1.2-2'}} zł</ion-label>
-          
-      </ion-item>
-
-      <ion-item>
-        <ion-label>Koszt zamówienia: {{sumOfPrices | number : '1.2-2'}} zł</ion-label>
-      </ion-item>
-    </ion-list>
-
-    
-  <ion-list text-center>
-  
-    <button ion-button color="secondary" [round]="true" (click)="addOrder()"><ion-icon name="add"></ion-icon></button>
+    <ion-grid>
+      <ion-row>
+       <ion-col>
+         kuchnia
+       </ion-col>
+       <ion-col>
+        <button ion-button [round]="true" (click)="chooseTable(1)">Stolik 1</button>
+       </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <button ion-button [round]="true" (click)="chooseTable(2)">Stolik 2</button>
+        </ion-col>
+        <ion-col>
+          <button ion-button [round]="true" (click)="chooseTable(3)">Stolik 3</button>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+          <ion-col>
+            <button ion-button [round]="true" (click)="chooseTable(4)">Stolik 4</button>
+          </ion-col>
+          <ion-col>
+            <button ion-button [round]="true" (click)="chooseTable(5)">Stolik 5</button>
+          </ion-col>
+        </ion-row>
+    </ion-grid>
 
   </ion-list>
+
+
+  <ion-list *ngIf = 'tableWasChosen'>
+    <ion-list-header>
+      Zamówienie - stolik {{currentOrder.tableId}} <button ion-button (click)="tableWasChosen = false">Zmień</button>
+    </ion-list-header>
+
+    <ion-item *ngFor = "let product of orderedProducts">
+        <ion-label>{{product.name}}</ion-label>
+        <ion-label>{{product.cost | number : '1.2-2'}} zł</ion-label>
+        <ion-label>
+          <button ion-button color="danger" [round]="true" (click)="removeProduct()"><ion-icon name="close"></ion-icon></button>
+        </ion-label>
+          
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Koszt zamówienia: {{sumOfPrices | number : '1.2-2'}} zł</ion-label>
+    </ion-item>
+
+    <ion-list text-center>
+  
+      <button ion-button color="secondary" [round]="true" (click)="addOrder()"><ion-icon name="add"></ion-icon></button>
+    
+    </ion-list>
+  </ion-list>
+
 </ion-content>

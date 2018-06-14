@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { Bill } from "../../classes/bill"
 import { Product } from "../../classes/product"
 import { ProductType } from "../../classes/productType"
 
@@ -13,9 +14,13 @@ export class SingleOrderPage {
   private orderedProducts: Product[] = new Array<Product>();
   private productTypes: ProductType[] = new Array<ProductType>();
   private sumOfPrices: number = 5.5;
+  //decides whether display table choice part of view or products choice
+  private tableWasChosen:boolean;
+  //represents the current order
+  private currentOrder:Bill;
 
   constructor(public navCtrl: NavController, public navParams: NavParams) {
-    
+
     let product1:Product = new Product();
     product1.cost = 10.4;
     product1.name = "product1";
@@ -33,12 +38,22 @@ export class SingleOrderPage {
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad SingleOrderPage');
+    this.tableWasChosen = false;
+    this.currentOrder = new Bill;
+  }
+
+  chooseTable(tableNumber:string):void{
+    this.tableWasChosen = true;
+    this.currentOrder.tableId = tableNumber;
   }
 
   addProduct():void{
 
     this.updateSum();
+  }
+
+  removeProduct():void{
+
   }
 
   addOrder():void{

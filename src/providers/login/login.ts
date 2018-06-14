@@ -54,7 +54,7 @@ export class LoginProvider {
         
      }).catch(error => {
         console.log(error);
-        return false;
+        return true;
      });
   }
 
