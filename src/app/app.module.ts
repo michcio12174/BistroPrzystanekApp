@@ -17,6 +17,7 @@ import { SingleOrderPage } from '../pages/single-order/single-order';
 //providers
 import { ConnectivityProvider } from '../providers/connectivity/connectivity';
 import { LoginProvider } from '../providers/login/login';
+import { DataProvider } from '../providers/data/data';
 
 @NgModule({
   declarations: [
@@ -46,7 +47,8 @@ import { LoginProvider } from '../providers/login/login';
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     ConnectivityProvider,
     Network,
-    LoginProvider
+    LoginProvider,
+    DataProvider
   ]
 })
 export class AppModule {}

@@ -10,12 +10,14 @@ export class LoginProvider {
 
   private url:string = 'https://vast-harbor-51468.herokuapp.com/v1';
   private tokenPath:string = '/oauth/token';
+
   public currentlyLoggedUser: string;
-  public authResponse: AuthResponse;
 
   constructor(private http: HttpClient,
     private storage: Storage) {
   }
+
+  //structure of object consumed by api endpoint that returns tokens
 
   //Auth:
   //type: object
@@ -29,10 +31,11 @@ export class LoginProvider {
   //    type: string
 
   //sprawdza czy użytkownik istnieje w bazie i czy hasło jest poprawne
-  //jeśli tak, to zmienna klasy subject zostaje ustawiona na dane subjecta i zapisuje zalogowanego w pamięci
+  //jeśli tak, to zapisuje zalogowanego w pamięci
   logIn(enteredUsername: string, enteredPassword: string): Promise<boolean> {
     let specificUrl: string = this.url + this.tokenPath;
 
+    //information about type of authorisation is followed by base64 username:password
     let myHeaders = new HttpHeaders({
       "Authorization": "Basic " + btoa('gop-client:bfjddf7$%534hdf##474sd&*nMdfWE3'),
       "Content-Type": "application/x-www-form-urlencoded"
@@ -40,21 +43,23 @@ export class LoginProvider {
 
     let body = new HttpParams()
       .set('grant_type', 'password')
-      .set('username', enteredUsername)
-      .set('password', enteredPassword);
+      .set('username', enteredUsername.trim())
+      .set('password', enteredPassword.trim());
 
     return this.http.post<AuthResponse>(specificUrl, body.toString(), {headers:myHeaders}).toPromise()
     .then(response => {
-        console.log(response);
+      console.log(response);
         
-        this.storage.set('loggedUser', enteredUsername); //zapisuję sobie dane urzytkownika
-        this.storage.set('currentToken', response); //zapisuję otrzymany token
+      this.storage.set('loggedUser', enteredUsername); //zapisuję sobie dane urzytkownika
+      this.storage.set('currentToken', JSON.stringify(response)); //zapisuję otrzymany token
+        
+      this.currentlyLoggedUser = enteredUsername;//zapamiętuję nazwe urzytkownika
 
-        return true;
+      return true;
         
      }).catch(error => {
-        console.log(error);
-        return true;
+      console.log(error);
+      return false;
      });
   }
 
@@ -62,7 +67,7 @@ export class LoginProvider {
   isLoggedIn(): Promise<boolean>{
     return this.storage.get("loggedUser").then(response => {
       if (response) {
-        console.log("here comes username red fro storage:");
+        console.log("here comes username red from storage:");
         console.log(response);
         this.currentlyLoggedUser = response;
         return true;
@@ -74,6 +79,14 @@ export class LoginProvider {
   logOut(): void{
     this.currentlyLoggedUser = null;
     this.storage.remove("loggedUser");
+  }
+
+  //retreive token from memory as JSON string and parse it
+  getCurrentToken(): Promise<AuthResponse>{
+    return this.storage.get("currentToken").then(token => {
+      let parsedToken:AuthResponse = JSON.parse(token);
+      return parsedToken;
+    });
   }
 
 }

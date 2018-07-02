@@ -1,7 +1,7 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>Twoje zamówienia</ion-title>
+    <ion-title>Twoje zamówienia, {{this.loginProvider.currentlyLoggedUser}}</ion-title>
 
     <ion-buttons end>
       <button ion-button icon-only (click)="this.navCtrl.push(this.settingsPage)">
@@ -14,6 +14,19 @@
 
 
 <ion-content padding>
+
+  <ion-list *ngIf = 'tableWasChosen'>
+    
+    <ion-item *ngFor = "let bill of bills">
+      <ion-label>Stół: {{bill.tableId}</ion-label>
+      <ion-label>Liczba gości: {{bill.guestsNumber | number : '1.0-0'}} zł</ion-label>
+      <ion-label>
+        <button ion-button color="danger" [round]="true" (click)="cancelBill()"><ion-icon name="close"></ion-icon></button>
+      </ion-label>
+              
+    </ion-item>
+    
+  </ion-list>
 
   <ion-fab right bottom>
     <button ion-fab color="secondary" (click)="this.navCtrl.push(this.singleOrderPage)"><ion-icon name="add"></ion-icon></button>
