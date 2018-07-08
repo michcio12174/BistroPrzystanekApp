@@ -45,6 +45,14 @@
       Zamówienie - stolik {{currentOrder.tableId}} <button ion-button (click)="tableWasChosen = false">Zmień</button>
     </ion-list-header>
 
+    <ion-item *ngFor = "let productType of productTypes">
+      <ion-label>{{productType.name}}</ion-label>
+      <ion-label>{{productType.code | number : '1.0-0'}} zł</ion-label>
+      <ion-label>
+        <button ion-button color="danger" [round]="true" (click)="removeProduct()"><ion-icon name="close"></ion-icon></button>
+      </ion-label>
+        
+  </ion-item>
     <ion-item *ngFor = "let product of orderedProducts">
         <ion-label>{{product.name}}</ion-label>
         <ion-label>{{product.cost | number : '1.2-2'}} zł</ion-label>

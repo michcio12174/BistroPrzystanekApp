@@ -5,8 +5,6 @@ import { SingleOrderPage } from '../../pages/single-order/single-order';
 import { Bill } from '../../classes/bill';
 import { DataProvider } from '../../providers/data/data'
 import { LoginProvider } from '../../providers/login/login'
-//debug
-import { ToastController } from 'ionic-angular';
 
 @IonicPage()
 @Component({
@@ -25,7 +23,6 @@ export class OrdersListPage {
     public navParams: NavParams, 
     public dataProvider: DataProvider,
     public loginProvider: LoginProvider,
-    private toastController: ToastController, //debug
   ) {
   }
 
@@ -40,12 +37,6 @@ export class OrdersListPage {
 
     }).catch(error =>{
       console.log(error);
-
-      let toast = this.toastController.create({ //debug
-        message: 'Błąd przy ładowaniu zamówień w liście zamówień.',
-        duration: 4000
-      })
-      toast.present();
     })
   }
 

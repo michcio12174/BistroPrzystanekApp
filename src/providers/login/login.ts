@@ -53,7 +53,7 @@ export class LoginProvider {
       this.storage.set('loggedUser', enteredUsername); //zapisuję sobie dane urzytkownika
       this.storage.set('currentToken', JSON.stringify(response)); //zapisuję otrzymany token
         
-      this.currentlyLoggedUser = enteredUsername;//zapamiętuję nazwe urzytkownika
+      this.currentlyLoggedUser = enteredUsername.trim();//zapamiętuję nazwe urzytkownika
 
       return true;
         
