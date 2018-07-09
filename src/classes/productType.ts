@@ -1,4 +1,6 @@
 export class ProductType{
-    code:number;
+    id:number;
+    companyId:string;
+    code:string;
     name:string;
 }

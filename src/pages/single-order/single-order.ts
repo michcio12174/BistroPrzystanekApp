@@ -20,8 +20,14 @@ export class SingleOrderPage {
   private productTypes: ProductType[] = new Array<ProductType>();
 
   private sumOfPrices: number = 5.5;
+
+  //----------------flags controling state of the view----------------
   //decides whether display table choice part of view or products choice
-  private tableWasChosen:boolean;
+  private showTableChoice:boolean;
+  private showCurrentOrder:boolean;
+  private showAddingNewProduct:boolean;
+
+
   //represents the current order
   private currentOrder:Bill;
 
@@ -29,25 +35,13 @@ export class SingleOrderPage {
     public navCtrl: NavController, 
     public navParams: NavParams,
     public dataProvider:DataProvider
-  ) {
+  ){}
 
-    let product1:Product = new Product();
-    product1.cost = 10.4;
-    product1.name = "product1";
-    product1.typeID = 1;
-
-    let product2:Product = new Product();
-    product2.cost = 14.34;
-    product2.name = "product2";
-    product2.typeID = 3;
-    
-    this.orderedProducts.push(product1)
-    this.orderedProducts.push(product2)
-
-    this.updateSum();
-  }
   ionViewWillEnter(){
-    this.tableWasChosen = false;
+    this.showTableChoice = true;
+    this.showCurrentOrder = false;
+    this.showCurrentOrder = false;
+    
     this.currentOrder = new Bill;
 
     //get available products and their types
@@ -60,8 +54,22 @@ export class SingleOrderPage {
     })
   }
 
+  goToTableChoice():void{
+    this.showTableChoice = true;
+    this.showCurrentOrder = false;
+    this.showAddingNewProduct = false;
+  }
+
+  goToAddingProducts():void{
+    this.showTableChoice = false;
+    this.showCurrentOrder = false;
+    this.showAddingNewProduct = true;
+  }
+
   chooseTable(tableNumber:string):void{
-    this.tableWasChosen = true;
+    this.showTableChoice = false;
+    this.showCurrentOrder = true;
+    this.showAddingNewProduct = false;
     this.currentOrder.tableId = tableNumber;
   }
 
@@ -74,7 +82,7 @@ export class SingleOrderPage {
 
   }
 
-  addOrder():void{
+  addOrderToDatabase():void{
 
   }
 
