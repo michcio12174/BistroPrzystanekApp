@@ -74,10 +74,15 @@
     <ion-item *ngFor = "let productType of productTypes">
       <ion-label>
         {{productType.name}}
-        {{productType.id}}
         <ion-item *ngFor = "let product of (allProducts | productFilter:productType.id)">
           {{product.name}}
-          {{product.typeId}}
+          {{product.cost | number : '1.2-2'}} zł
+          <div item-right>
+            <button  ion-button (click)="addProduct(product)"><ion-icon name="add-circle"></ion-icon></button>
+            {{productCount[product.id - 1]}}
+            <button ion-button (click)="removeProduct(product)"><ion-icon name="remove-circle"></ion-icon></button>
+          </div>
+
         </ion-item>
       </ion-label>
     </ion-item>
