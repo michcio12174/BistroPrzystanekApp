@@ -115,7 +115,7 @@ export class DataProvider {
 
       let toast = this.toastController.create({
         message: message,
-        duration: 4000
+        duration: 5000
       })
       toast.present();
 
@@ -127,7 +127,7 @@ export class DataProvider {
 
       let toast = this.toastController.create({
         message: message,
-        duration: 10000
+        duration: 5000
       })
       toast.present();
     }

@@ -10,31 +10,101 @@
 <ion-content padding>
   <ion-list text-center *ngIf = 'showTableChoice'>
 
+    <h5>Wybierz stolik</h5><br>
     <ion-grid>
+
       <ion-row>
-       <ion-col>
-         kuchnia
-       </ion-col>
-       <ion-col>
-        <button ion-button [round]="true" (click)="chooseTable(1)">Stolik 1</button>
-       </ion-col>
-      </ion-row>
-      <ion-row>
-        <ion-col>
-          <button ion-button [round]="true" (click)="chooseTable(2)">Stolik 2</button>
+
+        <ion-col col-4>
+            <button ion-button color="dark" full>Bufet</button>
         </ion-col>
-        <ion-col>
-          <button ion-button [round]="true" (click)="chooseTable(3)">Stolik 3</button>
+
+        <ion-col col-2>
         </ion-col>
+
+        <ion-col col-2>
+        </ion-col>
+
+        <ion-col col-2>
+        </ion-col>
+
+        <ion-col col-2>
+        </ion-col>
+
       </ion-row>
+
       <ion-row>
-          <ion-col>
-            <button ion-button [round]="true" (click)="chooseTable(4)">Stolik 4</button>
+
+        <ion-col col-2>
+        </ion-col>
+
+        <ion-col col-2>
+        </ion-col>
+
+        <ion-col col-2>
+        </ion-col>
+
+        <ion-col col-2>
+          <button ion-button  (click)="chooseTable(3)" full>3</button>
+        </ion-col>
+
+        <ion-col col-2>
+        </ion-col>
+
+        <ion-col col-2>
+          <button ion-button  (click)="chooseTable(5)" full>5</button>
+        </ion-col>
+        
+      </ion-row>
+
+      <ion-row>
+
+          <ion-col col-2>
           </ion-col>
-          <ion-col>
-            <button ion-button [round]="true" (click)="chooseTable(5)">Stolik 5</button>
+    
+          <ion-col col-2>
+            <button ion-button  (click)="chooseTable(2)" full>2</button>
           </ion-col>
-        </ion-row>
+    
+          <ion-col col-2>
+          </ion-col>
+    
+          <ion-col col-2>
+          </ion-col>
+    
+          <ion-col col-2>
+          </ion-col>
+    
+          <ion-col col-2>
+          </ion-col>
+            
+      </ion-row>
+
+      <ion-row>
+
+          <ion-col col-2>
+            <button ion-button  (click)="chooseTable(1)" full>1</button>
+          </ion-col>
+    
+          <ion-col col-2>
+          </ion-col>
+    
+          <ion-col col-2>
+          </ion-col>
+    
+          <ion-col col-2>
+            <button ion-button  (click)="chooseTable(4)" full>4</button>
+          </ion-col>
+    
+          <ion-col col-2>
+          </ion-col>
+    
+          <ion-col col-2>
+            <button ion-button  (click)="chooseTable(6)" full>6</button>
+          </ion-col>
+            
+      </ion-row>
+
     </ion-grid>
 
   </ion-list>
@@ -42,7 +112,7 @@
 
   <ion-list *ngIf = 'showCurrentOrder'>
     <ion-list-header>
-      Zamówienie - stolik {{currentOrder.tableId}} <button ion-button (click)="tableWasChosen = false">Zmień</button>
+        <h5>Zamówienie - stolik {{currentOrder.tableId}} <button ion-button (click)="goToTableChoice()">Zmień</button></h5>
     </ion-list-header>
     
     <ion-item *ngFor = "let product of orderedProducts">
@@ -66,26 +136,40 @@
     </ion-list>
   </ion-list>
 
-  <ion-list *ngIf = 'showAddingNewProduct'>
-    <ion-list-header>
-      Menu
-    </ion-list-header>
+  <div *ngIf = 'showAddingNewProduct' text-center>
 
-    <ion-item *ngFor = "let productType of productTypes">
-      <ion-label>
-        {{productType.name}}
-        <ion-item *ngFor = "let product of (allProducts | productFilter:productType.id)">
-          {{product.name}}
-          {{product.cost | number : '1.2-2'}} zł
-          <div item-right>
-            <button  ion-button (click)="addProduct(product)"><ion-icon name="add-circle"></ion-icon></button>
-            {{productCount[product.id - 1]}}
-            <button ion-button (click)="removeProduct(product)"><ion-icon name="remove-circle"></ion-icon></button>
-          </div>
+    <h5>Menu</h5>
 
-        </ion-item>
-      </ion-label>
-    </ion-item>
-  </ion-list>
+    <ion-list *ngFor = "let productType of productTypes">
+
+      <ion-list-header (click)="productType.show = !productType.show">
+        <b item-start>{{productType.name}}</b>
+        <div item-end>
+          <ion-icon *ngIf = "!productType.show" name="add"></ion-icon>
+          <ion-icon *ngIf = "productType.show" name="remove"></ion-icon>
+        </div>
+      </ion-list-header>
+
+      <ion-item *ngIf = "productType.show">
+
+        <ion-list>
+          <ion-item *ngFor = "let product of (allProducts | productFilter:productType.id)">
+            {{product.name}}
+            {{product.cost | number : '1.2-2'}} zł
+            <div item-right>
+              <button  ion-button (click)="addProduct(product)"><ion-icon name="add-circle"></ion-icon></button>
+              {{productCount[product.id - 1]}}
+              <button ion-button (click)="removeProduct(product)"><ion-icon name="remove-circle"></ion-icon></button>
+            </div>
+          </ion-item>
+        </ion-list>
+      
+      </ion-item>
+
+    </ion-list>
+  
+    <button ion-button (click)="goToOrderOverview()">Wróć</button>
+
+  </div>
 
 </ion-content>

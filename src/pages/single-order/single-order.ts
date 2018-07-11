@@ -67,12 +67,6 @@ export class SingleOrderPage {
         for(let i = 0; i < maxId; i++){
           this.productCount[i] = 0;
         }
-
-        let toast = this.toastController.create({
-          message: "table width:" + maxId.toString(),
-          duration: 10000
-        })
-        toast.present();
       })
     })
   }
@@ -89,10 +83,14 @@ export class SingleOrderPage {
     this.showAddingNewProduct = true;
   }
 
-  chooseTable(tableNumber:string):void{
+  goToOrderOverview():void{
     this.showTableChoice = false;
     this.showCurrentOrder = true;
     this.showAddingNewProduct = false;
+  }
+
+  chooseTable(tableNumber:string):void{
+    this.goToOrderOverview();
     this.currentOrder.tableId = tableNumber;
   }
 

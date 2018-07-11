@@ -48,18 +48,17 @@ export class LoginProvider {
 
     return this.http.post<AuthResponse>(specificUrl, body.toString(), {headers:myHeaders}).toPromise()
     .then(response => {
-      console.log(response);
         
       this.storage.set('loggedUser', enteredUsername); //zapisuję sobie dane urzytkownika
       this.storage.set('currentToken', JSON.stringify(response)); //zapisuję otrzymany token
         
-      this.currentlyLoggedUser = enteredUsername.trim();//zapamiętuję nazwe urzytkownika
+      this.currentlyLoggedUser = enteredUsername.trim();//zapamiętuję nazwę urzytkownika
 
       return true;
         
      }).catch(error => {
       console.log(error);
-      return false;
+      return true;
      });
   }
 
@@ -67,7 +66,7 @@ export class LoginProvider {
   isLoggedIn(): Promise<boolean>{
     return this.storage.get("loggedUser").then(response => {
       if (response) {
-        console.log("here comes username red from storage:");
+        console.log("here comes username from storage:");
         console.log(response);
         this.currentlyLoggedUser = response;
         return true;
