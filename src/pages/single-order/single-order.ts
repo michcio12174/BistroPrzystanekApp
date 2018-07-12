@@ -4,6 +4,7 @@ import { Bill } from "../../classes/bill"
 import { Product } from "../../classes/product"
 import { ProductType } from "../../classes/productType"
 import { DataProvider } from '../../providers/data/data'
+import { OrdersListPage } from "../orders-list/orders-list"
 import { ToastController } from 'ionic-angular';//debug
 
 @IonicPage()
@@ -34,11 +35,15 @@ export class SingleOrderPage {
   //represents the current order
   private currentOrder:Bill;
 
+  //where to go after bill is posted
+  private pageAfterPostingBill = OrdersListPage;
+
+
   constructor(
     public navCtrl: NavController, 
     public navParams: NavParams,
     public dataProvider:DataProvider,
-    private toastController: ToastController,//debug
+    private toastController: ToastController//debug
   ){}
 
   ionViewWillEnter(){
@@ -47,6 +52,7 @@ export class SingleOrderPage {
     this.showCurrentOrder = false;
     
     this.currentOrder = new Bill;
+    this.currentOrder.guestsNumber = 4;//TODOTODOTODO
 
     //get available products and their types
     this.dataProvider.getProductTypes().then(productTypes =>{
@@ -95,20 +101,28 @@ export class SingleOrderPage {
   }
 
   addProduct(productToAdd:Product):void{
-    this.productCount[productToAdd.id - 1] += 1;
+    this.productCount[productToAdd.id - 1] += 1;//adding to array that counts number of items
+    this.currentOrder.productsIds.push(productToAdd.id);//adding to the order object
 
     this.updateSum();
   }
 
   removeProduct(productToRemove:Product):void{
     if(this.productCount[productToRemove.id - 1] > 0){
-      this.productCount[productToRemove.id - 1] -= 1;
+      this.productCount[productToRemove.id - 1] -= 1;//remove from counting array
+
+      let index = this.currentOrder.productsIds.indexOf(productToRemove.id)//find index and remove
+      this.currentOrder.productsIds.splice(index, 1);
     }
 
   }
 
   addOrderToDatabase():void{
-
+    this.dataProvider.postBill(this.currentOrder).then(response =>{
+      if(response){
+        this.navCtrl.setRoot(this.pageAfterPostingBill);
+      }
+    });
   }
 
   updateSum():void{

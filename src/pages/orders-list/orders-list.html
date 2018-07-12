@@ -1,6 +1,6 @@
 <ion-header>
 
-  <ion-navbar>
+  <ion-navbar hideBackButton>
     <ion-title>Twoje zamówienia, {{this.loginProvider.currentlyLoggedUser}}</ion-title>
 
     <ion-buttons end>
@@ -15,12 +15,14 @@
 
 <ion-content padding>
 
-  <ion-list *ngIf = 'tableWasChosen'>
+  <ion-list>
     
     <ion-item *ngFor = "let bill of bills">
-      <ion-label>Stół: {{bill.tableId}</ion-label>
+      <ion-label>Stolik: {{bill.tableId}}</ion-label>
       <ion-label>Liczba gości: {{bill.guestsNumber | number : '1.0-0'}} zł</ion-label>
       <ion-label>
+        <button ion-button color="danger" [round]="true" (click)="cancelBill()"><ion-icon name="close"></ion-icon></button>
+        <button ion-button color="danger" [round]="true" (click)="cancelBill()"><ion-icon name="close"></ion-icon></button>
         <button ion-button color="danger" [round]="true" (click)="cancelBill()"><ion-icon name="close"></ion-icon></button>
       </ion-label>
               

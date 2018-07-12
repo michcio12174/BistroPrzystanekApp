@@ -2,5 +2,5 @@ export class Bill{
     tableId:string;
     guestsNumber:number;
     waiterUsername:string;
-    products:number[];
+    productsIds:number[]; //id produktów w zamówieniu
 }

@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Bill } from '../../classes/bill';
 import { Product } from '../../classes/product';
@@ -38,8 +38,47 @@ export class DataProvider {
     });
   }
 
-  postBill():void{
+  postBill(billToPost:Bill):Promise<boolean>{
+    let specificUrl: string = this.url + "/bill/";
 
+    let billJSON = {
+      "tableId": billToPost.tableId,
+      "guestsNumber": billToPost.guestsNumber,
+      "waiterUsername": billToPost.waiterUsername,
+      "productsIds": billToPost.productsIds
+    }
+
+    return this.createHeader().then(header => {
+
+      return this.http.post(specificUrl, JSON.stringify(billJSON), {headers:header}).toPromise()
+      .then((response:HttpResponse<any>) => {
+        if(response.status == 200){
+
+          let toast = this.toastController.create({
+            message: "success",
+            duration: 5000
+          })
+          toast.present();
+          
+          return true;
+        }
+        else{
+          let message:string = "Error, response code " + response.status.toString();
+
+          let toast = this.toastController.create({
+            message: message,
+            duration: 5000
+          })
+          toast.present();
+
+          return false
+        }
+      })
+      .catch((err:HttpErrorResponse) => {
+        this.displayErrorToast(err);
+        return false;
+      });
+    });
   }
 
   deleteBill():void{
@@ -92,7 +131,7 @@ export class DataProvider {
   }
 
 
-  //creating header of the request with token from storage
+  //---------------------------------------------------------------- header creation ----------------------------------------------------------------
   createHeader():Promise<HttpHeaders>{
 
     return this.loginProvider.getCurrentToken().then(parsedToken => {
@@ -107,11 +146,12 @@ export class DataProvider {
     });
   }
 
+  //---------------------------------------------------------------- error signaling ----------------------------------------------------------------
   displayErrorToast(err:HttpErrorResponse):void{
     if (err.error instanceof Error){
 
       let message:string;
-      message = "else " +  err.error.message;
+      message = "if " +  err.error.message;
 
       let toast = this.toastController.create({
         message: message,
@@ -123,7 +163,7 @@ export class DataProvider {
 
     else{
       let message:string;
-      message = err.message;
+      message = "else " + err.message;
 
       let toast = this.toastController.create({
         message: message,

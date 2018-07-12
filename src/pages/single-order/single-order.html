@@ -1,6 +1,6 @@
 <ion-header>
 
-  <ion-navbar>
+  <ion-navbar hideBackButton>
     <ion-title>Zamówienie</ion-title>
   </ion-navbar>
 
@@ -157,9 +157,9 @@
             {{product.name}}
             {{product.cost | number : '1.2-2'}} zł
             <div item-right>
-              <button  ion-button (click)="addProduct(product)"><ion-icon name="add-circle"></ion-icon></button>
-              {{productCount[product.id - 1]}}
               <button ion-button (click)="removeProduct(product)"><ion-icon name="remove-circle"></ion-icon></button>
+              {{productCount[product.id - 1]}}
+              <button ion-button (click)="addProduct(product)"><ion-icon name="add-circle"></ion-icon></button>
             </div>
           </ion-item>
         </ion-list>

@@ -39,7 +39,7 @@ export class HomePage {
       else {
         let toast = this.toastController.create({
           message: "Wprowadź login i hasło",
-          duration: 4000
+          duration: 3000
         })
         toast.present();
       }
@@ -48,7 +48,7 @@ export class HomePage {
     else {
       let toast = this.toastController.create({
         message: "Jesteś offline - włącz transmisję danych lub połącz się z siecią wifi.",
-        duration: 4000
+        duration: 3000
       })
       toast.present();
     }
@@ -58,7 +58,7 @@ export class HomePage {
   private loginSuccessfull(): void {
     let toast = this.toastController.create({
       message: "Logowanie przebiegło pomyślnie",
-      duration: 4000
+      duration: 3000
     });
     toast.present();
     this.navCtrl.setRoot(this.pageAfterLogin);
@@ -68,7 +68,7 @@ export class HomePage {
   private loginUnsuccessfull(): void {
     let toast = this.toastController.create({
       message: "Błąd. Niepoprawny login lub hasło?",
-      duration: 4000
+      duration: 3000
     })
     toast.present();
   }

@@ -46,7 +46,7 @@ export class LoginProvider {
       .set('username', enteredUsername.trim())
       .set('password', enteredPassword.trim());
 
-    return this.http.post<AuthResponse>(specificUrl, body.toString(), {headers:myHeaders}).toPromise()
+    return this.http.post<AuthResponse>(specificUrl, body, {headers:myHeaders}).toPromise()
     .then(response => {
         
       this.storage.set('loggedUser', enteredUsername); //zapisuję sobie dane urzytkownika
