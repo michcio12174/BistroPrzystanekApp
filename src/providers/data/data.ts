@@ -41,16 +41,11 @@ export class DataProvider {
   postBill(billToPost:Bill):Promise<boolean>{
     let specificUrl: string = this.url + "/bill/";
 
-    let billJSON = {
-      "tableId": billToPost.tableId,
-      "guestsNumber": billToPost.guestsNumber,
-      "waiterUsername": billToPost.waiterUsername,
-      "productsIds": billToPost.productsIds
-    }
+    
 
     return this.createHeader().then(header => {
 
-      return this.http.post(specificUrl, JSON.stringify(billJSON), {headers:header}).toPromise()
+      return this.http.post(specificUrl, JSON.stringify(billToPost), {headers:header}).toPromise()
       .then((response:HttpResponse<any>) => {
         if(response.status == 200){
 
@@ -70,7 +65,7 @@ export class DataProvider {
             duration: 5000
           })
           toast.present();
-
+ 
           return false
         }
       })
@@ -163,7 +158,7 @@ export class DataProvider {
 
     else{
       let message:string;
-      message = "else " + err.message;
+      message = "else " + err.message + err.statusText;
 
       let toast = this.toastController.create({
         message: message,

@@ -18,14 +18,22 @@
   <ion-list>
     
     <ion-item *ngFor = "let bill of bills">
-      <ion-label>Stolik: {{bill.tableId}}</ion-label>
-      <ion-label>Liczba gości: {{bill.guestsNumber | number : '1.0-0'}} zł</ion-label>
-      <ion-label>
-        <button ion-button color="danger" [round]="true" (click)="cancelBill()"><ion-icon name="close"></ion-icon></button>
-        <button ion-button color="danger" [round]="true" (click)="cancelBill()"><ion-icon name="close"></ion-icon></button>
-        <button ion-button color="danger" [round]="true" (click)="cancelBill()"><ion-icon name="close"></ion-icon></button>
-      </ion-label>
-              
+
+      <ion-grid>
+
+        <ion-row>
+          Stolik: {{bill.tableId}}
+          Liczba gości: {{bill.guestsNumber | number : '1.0-0'}}
+        </ion-row>
+
+        <ion-row>
+          <button ion-button color="secondary" (click)="closeBill()">Zakończ</button>
+          <button ion-button color="primary" (click)="editBill()">Edytuj</button>
+          <button ion-button color="danger" (click)="cancelBill()">Usuń</button>
+        </ion-row>
+          
+      </ion-grid>
+      
     </ion-item>
     
   </ion-list>

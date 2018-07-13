@@ -43,4 +43,12 @@ export class OrdersListPage {
   cancelBill():void{
 
   }
+
+  editBill():void{
+
+  }
+
+  closeBill():void{
+    
+  }
 }

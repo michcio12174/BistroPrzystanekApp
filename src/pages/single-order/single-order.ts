@@ -33,7 +33,7 @@ export class SingleOrderPage {
 
 
   //represents the current order
-  private currentOrder:Bill;
+  private currentOrder:Bill = new Bill;
 
   //where to go after bill is posted
   private pageAfterPostingBill = OrdersListPage;
