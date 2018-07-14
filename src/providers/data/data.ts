@@ -41,8 +41,6 @@ export class DataProvider {
   postBill(billToPost:Bill):Promise<boolean>{
     let specificUrl: string = this.url + "/bill/";
 
-    
-
     return this.createHeader().then(header => {
 
       return this.http.post(specificUrl, JSON.stringify(billToPost), {headers:header}).toPromise()
