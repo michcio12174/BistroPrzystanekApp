@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
 import { SettingsPage } from '../../pages/settings/settings'
 import { SingleOrderPage } from '../../pages/single-order/single-order';
 import { Bill } from '../../classes/bill';
@@ -23,6 +23,7 @@ export class OrdersListPage {
     public navParams: NavParams, 
     public dataProvider: DataProvider,
     public loginProvider: LoginProvider,
+    public alertCtrl: AlertController
   ) {
   }
 
@@ -40,15 +41,49 @@ export class OrdersListPage {
     })
   }
 
-  cancelBill(billToCancel:Bill):void{
-    this.dataProvider.cancelBill(billToCancel);
+  //-----------------------------functions displaying popups-----------------------------
+  cancelAlert(billToCancel:Bill):void{
+    let alert = this.alertCtrl.create({
+      title: 'Czy ma pewno chcesz anulować?',
+      message: 'Ta akcja jest nieodwracalna.',
+      buttons: [
+        {
+          text: 'Wróć',
+          role: 'cancel'
+
+        },
+        {
+          text: 'Anuluj rachunek',
+          handler: () => {
+            this.dataProvider.cancelBill(billToCancel);
+          }
+        }
+      ]
+    });
+    alert.present();
+  }
+
+  closeAlert(billToClose:Bill):void{
+    let alert = this.alertCtrl.create({
+      title: 'Czy na pewno chcesz zakmnąć?',
+      message: 'Ta akcja jest nieodwracalna.',
+      buttons: [
+        {
+          text: 'Wróć',
+          role: 'cancel'
+        },
+        {
+          text: 'Zamknij rachunek',
+          handler: () => {
+            this.dataProvider.closeBill(billToClose);
+          }
+        }
+      ]
+    });
+    alert.present();
   }
 
   editBill():void{
 
-  }
-
-  closeBill(billToCancel:Bill):void{
-    this.dataProvider.closeBill(billToCancel);
   }
 }
