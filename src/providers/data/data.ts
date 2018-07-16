@@ -50,29 +50,29 @@ export class DataProvider {
 
     return this.createHeader().then(header => {
 
-      return this.http.post(specificUrl, JSON.stringify(billToPostProcessed), {headers:header}).toPromise()
-      .then((response:HttpResponse<any>) => {
-        if(response.status == 200){
+      return this.http.post(specificUrl, JSON.stringify(billToPostProcessed), {headers:header, responseType: 'text'}).toPromise()
+       .then((response:any) => {
+         return true;
+       })
 
-          let toast = this.toastController.create({
-            message: 'huraaaaaaaaaaa',
-            duration: 5000
-          })
-          toast.present();
-          return true;
-        }
-        else{
-          let message:string = "Error, response code " + response.status.toString();
+      // return this.http.post(specificUrl, JSON.stringify(billToPostProcessed), {headers:header}).toPromise()
+      // .then((response:HttpResponse<any>) => {
+      //   if(response.status == 200){
 
-          let toast = this.toastController.create({
-            message: message,
-            duration: 5000
-          })
-          //toast.present();
+      //     return true;
+      //   }
+      //   else{
+      //     let message:string = "Error, response code " + response.status.toString();
+
+      //     let toast = this.toastController.create({
+      //       message: message,
+      //       duration: 5000
+      //     })
+      //     toast.present();
  
-          return false
-        }
-      })
+      //     return false;
+      //   }
+      // })
       .catch((err:HttpErrorResponse) => {
         this.displayErrorToast(err);
         return false;
@@ -80,28 +80,42 @@ export class DataProvider {
     });
   }
 
-  cancelBill(billToCancel:Bill):void{
-    let specificUrl: string = this.url + "/bill/cancel/" + billToCancel.id + "/";
+  cancelBill(billToCancel:Bill):Promise<boolean>{
+    let specificUrl: string = this.url + "/bill/cancel/" + billToCancel.id;
 
-    this.createHeader().then(header => {
+    return this.createHeader().then(header => {
 
-      this.http.put(specificUrl, null, {headers:header}).toPromise()
-      .then((response:HttpResponse<any>) => {
-        if(response.status == 200){
+      return this.http.put(specificUrl, null, {headers:header, responseType: 'text'}).toPromise()
+      .then((response:any) => { // fix to stop httpclient from parsing response with empty body
           return true;
-        }
-        else{
-
-          let toast = this.toastController.create({
-            message: "Rachunek anulowany",
-            duration: 5000
-          })
-          toast.present();
- 
-        }
       })
+
+      // return this.http.put(specificUrl, null, {headers:header}).toPromise()
+      // .then((response:HttpResponse<any>) => {
+      //   if(response.status == 200){
+
+      //     let toast = this.toastController.create({
+      //       message: "Rachunek anulowany",
+      //       duration: 5000
+      //     })
+      //     toast.present();
+
+      //     return true;
+      //   }
+      //   else{
+
+      //     let toast = this.toastController.create({
+      //       message: "Błąd " + response.status.toString(),
+      //       duration: 5000
+      //     })
+      //     toast.present();
+
+      //     return false;
+      //   }
+      // })
       .catch((err:HttpErrorResponse) => {
         this.displayErrorToast(err);
+        return false;
       });
     });
   }
@@ -110,28 +124,42 @@ export class DataProvider {
     //TODO
   }
 
-  closeBill(billToClose:Bill){
-    let specificUrl: string = this.url + "/bill/close/" + billToClose.id + "/";
+  closeBill(billToClose:Bill):Promise<boolean>{
+    let specificUrl: string = this.url + "/bill/close/" + billToClose.id;
 
-    this.createHeader().then(header => {
+    return this.createHeader().then(header => {
 
-      this.http.put(specificUrl, null, {headers:header}).toPromise()
-      .then((response:HttpResponse<any>) => {
-        if(response.status == 200){
+      return this.http.put(specificUrl, null, {headers:header, responseType: 'text'}).toPromise()
+      .then((response:any) => { // fix to stop httpclient from parsing response with empty body
           return true;
-        }
-        else{
-
-          let toast = this.toastController.create({
-            message: "Rachunek zamknięty",
-            duration: 5000
-          })
-          toast.present();
- 
-        }
       })
+      
+      //return this.http.put(specificUrl, null, {headers:header}).toPromise()
+      // .then((response:HttpResponse<any>) => {
+      //   if(response.status == 200){
+
+      //     let toast = this.toastController.create({
+      //       message: "Rachunek zamknięty",
+      //       duration: 5000
+      //     })
+      //     toast.present();
+
+      //     return true;
+      //   }
+      //   else{
+
+      //     let toast = this.toastController.create({
+      //       message: "Błąd " + response.status.toString(),
+      //       duration: 5000
+      //     })
+      //     toast.present();
+
+      //     return false;
+      //   }
+      // })
       .catch((err:HttpErrorResponse) => {
         this.displayErrorToast(err);
+        return false;
       });
     });
   }

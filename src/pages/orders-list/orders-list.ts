@@ -55,7 +55,7 @@ export class OrdersListPage {
         {
           text: 'Anuluj rachunek',
           handler: () => {
-            this.dataProvider.cancelBill(billToCancel);
+            this.dataProvider.cancelBill(billToCancel).then(() => {this.getOrders()});
           }
         }
       ]
@@ -75,7 +75,7 @@ export class OrdersListPage {
         {
           text: 'Zamknij rachunek',
           handler: () => {
-            this.dataProvider.closeBill(billToClose);
+            this.dataProvider.closeBill(billToClose).then(() => {this.getOrders()});
           }
         }
       ]
