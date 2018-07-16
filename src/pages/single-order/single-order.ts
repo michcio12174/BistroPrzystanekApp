@@ -52,7 +52,6 @@ export class SingleOrderPage {
     this.showCurrentOrder = false;
     
     this.currentOrder = new Bill;
-    this.currentOrder.guestsNumber = 4;//TODOTODOTODO
 
     //get available products and their types
     this.dataProvider.getProductTypes().then(productTypes =>{
@@ -90,13 +89,22 @@ export class SingleOrderPage {
   }
 
   goToOrderOverview():void{
-    this.showTableChoice = false;
-    this.showCurrentOrder = true;
-    this.showAddingNewProduct = false;
+    if(this.currentOrder.guestsNumber != 0 && this.currentOrder.tableId != "0")
+    {
+      this.showTableChoice = false;
+      this.showCurrentOrder = true;
+      this.showAddingNewProduct = false;
+    }
+    else{
+      let toast = this.toastController.create({
+        message: "Wybierz stolik i liczbę gości",
+        duration: 5000
+      })
+      toast.present();
+    }
   }
 
   chooseTable(tableNumber:string):void{
-    this.goToOrderOverview();
     this.currentOrder.tableId = tableNumber;
   }
 
@@ -118,11 +126,21 @@ export class SingleOrderPage {
   }
 
   addOrderToDatabase():void{
-    this.dataProvider.postBill(this.currentOrder).then(response =>{
-      if(response){
-        this.navCtrl.setRoot(this.pageAfterPostingBill);
-      }
-    });
+    if(this.currentOrder.productsIds && this.currentOrder.productsIds.length > 0){
+      this.dataProvider.postBill(this.currentOrder).then(response =>{
+        if(response){
+          this.navCtrl.setRoot(this.pageAfterPostingBill);
+        }
+      });
+    }
+    else{
+      let toast = this.toastController.create({
+        message: "Zamówienie jest puste",
+        duration: 5000
+      })
+      toast.present();
+    }
+    
   }
 
   updateSum():void{
@@ -134,4 +152,15 @@ export class SingleOrderPage {
 
     this.sumOfPrices = tempSum;
   }
+  //-----------------------------------------functions for order overview-----------------------------------------
+
+  getProductName(productId:number):string{
+    return (this.allProducts.find(currentProduct => currentProduct.id == productId)).name;
+  }
+
+  getProductPrice(productId:number):number{
+    return (this.allProducts.find(currentProduct => currentProduct.id == productId)).cost;
+  }
 }
+
+

@@ -4,7 +4,7 @@ import { Bill } from '../../classes/bill';
 import { Product } from '../../classes/product';
 import { ProductType } from '../../classes/productType';
 import { LoginProvider } from '../../providers/login/login';
-import { ToastController } from 'ionic-angular';//debug
+import { ToastController } from 'ionic-angular';
 
 @Injectable()
 export class DataProvider {
@@ -13,7 +13,7 @@ export class DataProvider {
 
   constructor(public http: HttpClient,
     private loginProvider: LoginProvider,
-    private toastController: ToastController,//debug
+    private toastController: ToastController,
   ) {
   }
 
@@ -41,18 +41,24 @@ export class DataProvider {
   postBill(billToPost:Bill):Promise<boolean>{
     let specificUrl: string = this.url + "/bill/";
 
+    let billToPostProcessed = {
+      'tableId': billToPost.tableId,
+      'guestsNumber': billToPost.guestsNumber,
+      'waiterUsername': billToPost.waiterUsername,
+      'productsIds': billToPost.productsIds
+    };
+
     return this.createHeader().then(header => {
 
-      return this.http.post(specificUrl, JSON.stringify(billToPost), {headers:header}).toPromise()
+      return this.http.post(specificUrl, JSON.stringify(billToPostProcessed), {headers:header}).toPromise()
       .then((response:HttpResponse<any>) => {
         if(response.status == 200){
 
           let toast = this.toastController.create({
-            message: "success",
+            message: 'huraaaaaaaaaaa',
             duration: 5000
           })
           toast.present();
-          
           return true;
         }
         else{
@@ -62,7 +68,7 @@ export class DataProvider {
             message: message,
             duration: 5000
           })
-          toast.present();
+          //toast.present();
  
           return false
         }
@@ -74,12 +80,60 @@ export class DataProvider {
     });
   }
 
-  deleteBill():void{
+  cancelBill(billToCancel:Bill):void{
+    let specificUrl: string = this.url + "/bill/cancel/" + billToCancel.id + "/";
 
+    this.createHeader().then(header => {
+
+      this.http.put(specificUrl, null, {headers:header}).toPromise()
+      .then((response:HttpResponse<any>) => {
+        if(response.status == 200){
+          return true;
+        }
+        else{
+
+          let toast = this.toastController.create({
+            message: "Rachunek anulowany",
+            duration: 5000
+          })
+          toast.present();
+ 
+        }
+      })
+      .catch((err:HttpErrorResponse) => {
+        this.displayErrorToast(err);
+      });
+    });
   }
 
   updateBill():void{
+    //TODO
+  }
 
+  closeBill(billToClose:Bill){
+    let specificUrl: string = this.url + "/bill/close/" + billToClose.id + "/";
+
+    this.createHeader().then(header => {
+
+      this.http.put(specificUrl, null, {headers:header}).toPromise()
+      .then((response:HttpResponse<any>) => {
+        if(response.status == 200){
+          return true;
+        }
+        else{
+
+          let toast = this.toastController.create({
+            message: "Rachunek zamknięty",
+            duration: 5000
+          })
+          toast.present();
+ 
+        }
+      })
+      .catch((err:HttpErrorResponse) => {
+        this.displayErrorToast(err);
+      });
+    });
   }
 
   //---------------------------------------------------------------- product types functions ----------------------------------------------------------------
@@ -148,7 +202,7 @@ export class DataProvider {
 
       let toast = this.toastController.create({
         message: message,
-        duration: 5000
+        duration: 10000
       })
       toast.present();
 
@@ -156,11 +210,11 @@ export class DataProvider {
 
     else{
       let message:string;
-      message = "else " + err.message + err.statusText;
+      message = "else " + err.message;
 
       let toast = this.toastController.create({
         message: message,
-        duration: 5000
+        duration: 10000
       })
       toast.present();
     }

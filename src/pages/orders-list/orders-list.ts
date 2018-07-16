@@ -40,15 +40,15 @@ export class OrdersListPage {
     })
   }
 
-  cancelBill():void{
-
+  cancelBill(billToCancel:Bill):void{
+    this.dataProvider.cancelBill(billToCancel);
   }
 
   editBill():void{
 
   }
 
-  closeBill():void{
-    
+  closeBill(billToCancel:Bill):void{
+    this.dataProvider.closeBill(billToCancel);
   }
 }

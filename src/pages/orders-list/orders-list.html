@@ -22,14 +22,14 @@
       <ion-grid>
 
         <ion-row>
-          Stolik: {{bill.tableId}}
+          Stolik: {{bill.tableId}},
           Liczba gości: {{bill.guestsNumber | number : '1.0-0'}}
         </ion-row>
 
         <ion-row>
-          <button ion-button color="secondary" (click)="closeBill()">Zakończ</button>
+          <button ion-button color="secondary" (click)="closeBill(bill)">Zamknij</button>
           <button ion-button color="primary" (click)="editBill()">Edytuj</button>
-          <button ion-button color="danger" (click)="cancelBill()">Usuń</button>
+          <button ion-button color="danger" (click)="cancelBill(bill)">Anuluj</button>
         </ion-row>
           
       </ion-grid>
