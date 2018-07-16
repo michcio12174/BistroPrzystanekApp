@@ -14,16 +14,17 @@ import { ToastController } from 'ionic-angular';//debug
 })
 export class SingleOrderPage {
 
-  //products ordered
-  private orderedProducts: Product[] = new Array<Product>();
   //all products
   private allProducts: Product[] = new Array<Product>();
   //all product types
   private productTypes: ProductType[] = new Array<ProductType>();
-  //products count - a index in an array corresponds to the product id nd number corresponds to how many was ordered
+  //products count - 
+  //an index in an array corresponds to the product id and number corresponds to how many was ordered
+  //indexes/ids are offset by one - id 1 is in the 0th element of the array
+  //remeber whan using it!
   private productCount: number[];
 
-  private sumOfPrices: number = 5.5;
+  private sumOfPrices: number = 0;
 
   //----------------flags controling state of the view----------------
   //decides whether display table choice part of view or products choice
@@ -112,7 +113,7 @@ export class SingleOrderPage {
     this.productCount[productToAdd.id - 1] += 1;//adding to array that counts number of items
     this.currentOrder.productsIds.push(productToAdd.id);//adding to the order object
 
-    this.updateSum();
+    this.sumOfPrices += productToAdd.cost;
   }
 
   removeProduct(productToRemove:Product):void{
@@ -121,8 +122,9 @@ export class SingleOrderPage {
 
       let index = this.currentOrder.productsIds.indexOf(productToRemove.id)//find index and remove
       this.currentOrder.productsIds.splice(index, 1);
+      
+    this.sumOfPrices -= productToRemove.cost;
     }
-
   }
 
   addOrderToDatabase():void{
@@ -142,16 +144,7 @@ export class SingleOrderPage {
     }
     
   }
-
-  updateSum():void{
-    let tempSum:number = 0;
-
-    for(let orderedProduct of this.orderedProducts){
-      tempSum += orderedProduct.cost;
-    }
-
-    this.sumOfPrices = tempSum;
-  }
+  
   //-----------------------------------------functions for order overview-----------------------------------------
 
   getProductName(productId:number):string{

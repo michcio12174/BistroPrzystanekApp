@@ -10,7 +10,7 @@
 <ion-content padding>
   <h6>Zamówienie: stolik {{currentOrder.tableId}}, {{currentOrder.guestsNumber}} gości</h6>
   
-  <ion-list text-center *ngIf = '!showTableChoice'><button ion-button (click)="goToTableChoice()">Zmień</button> </ion-list>
+  <ion-list text-center *ngIf = '!showTableChoice && !showAddingNewProduct'><button ion-button (click)="goToTableChoice()">Zmień</button> </ion-list>
 
 
   <ion-list text-center *ngIf = 'showTableChoice'>
@@ -149,7 +149,7 @@
     </ion-grid>
 
  
-    <button ion-button (click)="goToOrderOverview()" *ngIf = 'this.currentOrder.guestsNumber != 0 && this.currentOrder.tableId != "0"'>
+    <button ion-button color="secondary" (click)="goToOrderOverview()" *ngIf = 'this.currentOrder.guestsNumber != 0 && this.currentOrder.tableId != "0"'>
       Przejdź dalej 
     </button>
 
@@ -160,9 +160,8 @@
     
     <ng-container *ngFor = "let amount of productCount; let currIndex = index">
       <ion-item *ngIf = 'amount > 0'>
-        <b>{{getProductName(currIndex)}}</b>,
-        ilość: {{amount | number : '1.0-0'}},
-        cena/szt: {{getProductPrice(currIndex) | number : '1.2-2'}} zł
+        <b>{{getProductName(currIndex + 1)}}</b>,
+        cena/szt: {{getProductPrice(currIndex + 1) | number : '1.2-2'}} zł x {{amount | number : '1.0-0'}}
       </ion-item>
     </ng-container>
    
