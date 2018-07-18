@@ -28,7 +28,7 @@
 
         <ion-row>
           <button ion-button color="secondary" (click)="closeAlert(bill)">Zamknij</button>
-          <button ion-button color="primary" (click)="editBill()">Edytuj</button>
+          <button ion-button color="primary" (click)="editBill(bill)">Edytuj</button>
           <button ion-button color="danger" (click)="cancelAlert(bill)">Anuluj</button>
         </ion-row>
           
@@ -39,7 +39,7 @@
   </ion-list>
 
   <ion-fab right bottom>
-    <button ion-fab color="secondary" (click)="this.navCtrl.push(this.singleOrderPage)"><ion-icon name="add"></ion-icon></button>
+    <button ion-fab color="secondary" (click)="makeNewBill()"><ion-icon name="add"></ion-icon></button>
   </ion-fab>
 
 </ion-content>

@@ -41,11 +41,18 @@ export class DataProvider {
   postBill(billToPost:Bill):Promise<boolean>{
     let specificUrl: string = this.url + "/bill/";
 
+    let productsIds:Array<number> = new Array<number>(billToPost.products.length);
+
+    let i:number;
+    for (i = 0; i < billToPost.products.length; i++){
+      productsIds[i] = billToPost.products[i].id;
+    }
+
     let billToPostProcessed = {
       'tableId': billToPost.tableId,
       'guestsNumber': billToPost.guestsNumber,
       'waiterUsername': billToPost.waiterUsername,
-      'productsIds': billToPost.productsIds
+      'productsIds': productsIds
     };
 
     return this.createHeader().then(header => {
@@ -120,8 +127,54 @@ export class DataProvider {
     });
   }
 
-  updateBill():void{
-    //TODO
+  updateBill(billToPut:Bill):Promise<boolean>{
+    let specificUrl: string = this.url + "/bill";
+
+    let productsIds:Array<number> = new Array<number>(billToPut.products.length);
+
+    let i:number;
+    for (i = 0; i < billToPut.products.length; i++){
+      productsIds[i] = billToPut.products[i].id;
+    }
+
+    let billToPutProcessed = {
+      'id': billToPut.id,
+      'tableId': billToPut.tableId,
+      'guestsNumber': billToPut.guestsNumber,
+      'waiterUsername': billToPut.waiterUsername,
+      'productsIds': productsIds
+    };
+
+    return this.createHeader().then(header => {
+
+      return this.http.put(specificUrl, JSON.stringify(billToPutProcessed), {headers:header, responseType: 'text'}).toPromise()
+       .then((response:any) => {
+         return true;
+       })
+
+      // return this.http.put(specificUrl, JSON.stringify(billToPutProcessed), {headers:header}).toPromise()
+      // .then((response:HttpResponse<any>) => {
+      //   if(response.status == 200){
+
+      //     return true;
+      //   }
+      //   else{
+      //     let message:string = "Error, response code " + response.status.toString();
+
+      //     let toast = this.toastController.create({
+      //       message: message,
+      //       duration: 5000
+      //     })
+      //     toast.present();
+ 
+      //     return false;
+      //   }
+      // })
+      .catch((err:HttpErrorResponse) => {
+        this.displayErrorToast(err);
+        return false;
+      });
+    });
   }
 
   closeBill(billToClose:Bill):Promise<boolean>{

@@ -41,6 +41,14 @@ export class OrdersListPage {
     })
   }
 
+  makeNewBill():void{
+    this.navCtrl.push(this.singleOrderPage);
+  }
+  
+  editBill(billToEdit:Bill):void{
+    this.navCtrl.push(this.singleOrderPage,{bill: billToEdit});
+  }
+
   //-----------------------------functions displaying popups-----------------------------
   cancelAlert(billToCancel:Bill):void{
     let alert = this.alertCtrl.create({
@@ -83,7 +91,5 @@ export class OrdersListPage {
     alert.present();
   }
 
-  editBill():void{
-
-  }
+  
 }

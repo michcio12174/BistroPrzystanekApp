@@ -31,6 +31,8 @@ export class SingleOrderPage {
   private showTableChoice:boolean;
   private showCurrentOrder:boolean;
   private showAddingNewProduct:boolean;
+  //----------------flag controling method of saving bill----------------
+  private billFromScratch:boolean;
 
 
   //represents the current order
@@ -51,8 +53,6 @@ export class SingleOrderPage {
     this.showTableChoice = true;
     this.showCurrentOrder = false;
     this.showCurrentOrder = false;
-    
-    this.currentOrder = new Bill;
 
     //get available products and their types
     this.dataProvider.getProductTypes().then(productTypes =>{
@@ -73,6 +73,23 @@ export class SingleOrderPage {
         for(let i = 0; i < maxId; i++){
           this.productCount[i] = 0;
         }
+
+        //check if we go from scratch or editing a bill
+        if(this.navParams.get('bill')) {//we have bill
+          this.billFromScratch = false;
+
+          this.currentOrder = this.navParams.get('bill');
+
+          for(let product of this.currentOrder.products){
+            this.productCount[product.id - 1] += 1;//adding to array that counts number of items
+            this.sumOfPrices += product.cost;
+          }
+        }
+
+        else {//from scratch
+          this.billFromScratch = true;
+          this.currentOrder = new Bill;
+        }
       })
     })
   }
@@ -90,7 +107,7 @@ export class SingleOrderPage {
   }
 
   goToOrderOverview():void{
-    if(this.currentOrder.guestsNumber != 0 && this.currentOrder.tableId != "0")
+    if(this.currentOrder.guestsNumber != 0 && this.currentOrder.tableId != 0)
     {
       this.showTableChoice = false;
       this.showCurrentOrder = true;
@@ -105,13 +122,13 @@ export class SingleOrderPage {
     }
   }
 
-  chooseTable(tableNumber:string):void{
+  chooseTable(tableNumber:number):void{
     this.currentOrder.tableId = tableNumber;
   }
 
   addProduct(productToAdd:Product):void{
     this.productCount[productToAdd.id - 1] += 1;//adding to array that counts number of items
-    this.currentOrder.productsIds.push(productToAdd.id);//adding to the order object
+    this.currentOrder.products.push(productToAdd);//adding to the order object
 
     this.sumOfPrices += productToAdd.cost;
   }
@@ -120,20 +137,31 @@ export class SingleOrderPage {
     if(this.productCount[productToRemove.id - 1] > 0){
       this.productCount[productToRemove.id - 1] -= 1;//remove from counting array
 
-      let index = this.currentOrder.productsIds.indexOf(productToRemove.id)//find index and remove
-      this.currentOrder.productsIds.splice(index, 1);
+      let index = this.currentOrder.products.indexOf(productToRemove)//find index and remove
+      this.currentOrder.products.splice(index, 1);
       
     this.sumOfPrices -= productToRemove.cost;
     }
   }
 
   addOrderToDatabase():void{
-    if(this.currentOrder.productsIds && this.currentOrder.productsIds.length > 0){
-      this.dataProvider.postBill(this.currentOrder).then(response =>{
-        if(response){
+    if(this.currentOrder.products && this.currentOrder.products.length > 0){
+
+      if(this.billFromScratch){//we were creating new order
+        this.dataProvider.postBill(this.currentOrder).then(response =>{
+        if(response)
           this.navCtrl.setRoot(this.pageAfterPostingBill);
-        }
-      });
+        });
+      }
+
+      else{//we were editing order
+        
+        this.dataProvider.updateBill(this.currentOrder).then(response =>{
+        if(response)
+          this.navCtrl.setRoot(this.pageAfterPostingBill);
+        });
+      }
+      
     }
     else{
       let toast = this.toastController.create({
@@ -155,5 +183,3 @@ export class SingleOrderPage {
     return (this.allProducts.find(currentProduct => currentProduct.id == productId)).cost;
   }
 }
-
-
