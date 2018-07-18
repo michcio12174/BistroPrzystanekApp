@@ -21,7 +21,12 @@ export class HomePage {
     private connectivityProvider: ConnectivityProvider,
     private loginProvider: LoginProvider
   ) {
+  }
 
+  ionViewWillEnter(){
+    this.loginProvider.isLoggedIn().then(response => {
+      if(response) this.navCtrl.setRoot(this.pageAfterLogin);
+    })
   }
 
   login():void{

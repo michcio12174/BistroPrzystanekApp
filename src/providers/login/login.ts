@@ -2,8 +2,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { AuthResponse } from '../../classes/authResponse';
-
-//TODO przechowywanie tokena
+import { ToastController } from 'ionic-angular';
 
 @Injectable()
 export class LoginProvider {
@@ -14,24 +13,12 @@ export class LoginProvider {
   public currentlyLoggedUser: string;
 
   constructor(private http: HttpClient,
-    private storage: Storage) {
+    private storage: Storage,
+    private toastController: ToastController
+  ) {
   }
 
-  //structure of object consumed by api endpoint that returns tokens
-
-  //Auth:
-  //type: object
-  //properties:
-  //  grant_type:
-  //    type: string
-  //    description: "Always type 'password'"
-  //  username:
-  //    type: string
-  //  password:
-  //    type: string
-
   //sprawdza czy użytkownik istnieje w bazie i czy hasło jest poprawne
-  //jeśli tak, to zapisuje zalogowanego w pamięci
   logIn(enteredUsername: string, enteredPassword: string): Promise<boolean> {
     let specificUrl: string = this.url + this.tokenPath;
 
@@ -51,6 +38,8 @@ export class LoginProvider {
         
       this.storage.set('loggedUser', enteredUsername); //zapisuję sobie dane urzytkownika
       this.storage.set('currentToken', JSON.stringify(response)); //zapisuję otrzymany token
+      let currentDate = new Date();
+      this.storage.set('tokenExpirationDate', new Date(currentDate.getTime() + (response.expires_in * 1000))); //zapisuję kiedy token straci ważność
         
       this.currentlyLoggedUser = enteredUsername.trim();//zapamiętuję nazwę urzytkownika
 
@@ -66,10 +55,9 @@ export class LoginProvider {
   isLoggedIn(): Promise<boolean>{
     return this.storage.get("loggedUser").then(response => {
       if (response) {
-        console.log("here comes username from storage:");
-        console.log(response);
         this.currentlyLoggedUser = response;
-        return true;
+
+        return this.checkIfTokenExpired();
       }
       else return false;
     });
@@ -85,6 +73,22 @@ export class LoginProvider {
     return this.storage.get("currentToken").then(token => {
       let parsedToken:AuthResponse = JSON.parse(token);
       return parsedToken;
+    });
+  }
+
+  checkIfTokenExpired():Promise<boolean>{
+    return this.storage.get('currentToken').then((token:AuthResponse) => {
+      
+      if (token) {
+        return this.storage.get('tokenExpirationDate').then((expirationDate:Date) =>{
+          
+          if(expirationDate.getTime() < (new Date()).getTime()) return false;
+          else return true;
+
+        });
+      }
+
+      else return false
     });
   }
 

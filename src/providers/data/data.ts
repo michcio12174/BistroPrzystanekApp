@@ -13,7 +13,7 @@ export class DataProvider {
 
   constructor(public http: HttpClient,
     private loginProvider: LoginProvider,
-    private toastController: ToastController,
+    private toastController: ToastController
   ) {
   }
 
