@@ -20,6 +20,6 @@ export class SettingsPage {
 
   logOut():void{
     this.loginProvider.logOut();
-    this.navCtrl.setRoot(this.homePage);
+    this.navCtrl.setRoot('HomePage');
   }
 }

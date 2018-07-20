@@ -198,16 +198,16 @@
         <ion-list>
           <ion-item *ngFor = "let product of (allProducts | productFilter:productType.id)">
             <p text-wrap>{{product.name}}<br>
-            Cena: {{product.cost | number : '1.2-2'}} zł</p>
+            {{product.cost | number : '1.2-2'}} zł</p>
 
             <button ion-button (click)="removeProduct(product)" item-right padding>
               <ion-icon name="remove-circle"></ion-icon>
             </button>
             <p item-right>{{productCount[product.id - 1]}}</p>
             <button ion-button (click)="addProduct(product)" item-right padding>
-              <ion-icon name="add-circle"></ion-icon>
+              <ion-icon name="add-circle" ></ion-icon>
             </button>
-
+         
           </ion-item>
         </ion-list>
       

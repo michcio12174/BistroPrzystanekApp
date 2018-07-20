@@ -1,18 +1,13 @@
 import { Pipe, PipeTransform } from '@angular/core';
+import { Product } from "../../classes/product"
 
-/**
- * Generated class for the ProductFilterPipe pipe.
- *
- * See https://angular.io/api/core/Pipe for more info on Angular Pipes.
- */
+//pipe filters array of products and returns ony those with given product category id
+
 @Pipe({
   name: 'productFilter',
 })
 export class ProductFilterPipe implements PipeTransform {
-  /**
-   * Takes a value and makes it lowercase.
-   */
-  transform(value: string, ...args) {
-    return value.toLowerCase();
+  transform(products: Product[], id: number): Product[] {
+    return products.filter(product => product.typeId == id);
   }
 }

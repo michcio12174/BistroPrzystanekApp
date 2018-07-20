@@ -3,7 +3,6 @@ import { NavController } from 'ionic-angular';
 import { ToastController } from 'ionic-angular';
 import { ConnectivityProvider } from '../../providers/connectivity/connectivity';
 import { LoginProvider } from '../../providers/login/login';
-import { OrdersListPage } from "../orders-list/orders-list"
 
 @Component({
   selector: 'page-home',
@@ -13,7 +12,6 @@ export class HomePage {
 
   private username: string = "";
   private password: string = "";
-  private pageAfterLogin = OrdersListPage;
 
   constructor(
     public navCtrl: NavController,
@@ -25,7 +23,7 @@ export class HomePage {
 
   ionViewWillEnter(){
     this.loginProvider.isLoggedIn().then(response => {
-      if(response) this.navCtrl.setRoot(this.pageAfterLogin);
+      if(response) this.navCtrl.setRoot('OrdersListPage');
     })
   }
 
@@ -66,7 +64,7 @@ export class HomePage {
       duration: 3000
     });
     toast.present();
-    this.navCtrl.setRoot(this.pageAfterLogin);
+    this.navCtrl.setRoot('OrdersListPage');
   }
 
   //informuje, że logowanie się nie udało

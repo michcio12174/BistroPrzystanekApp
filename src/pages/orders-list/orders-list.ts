@@ -42,7 +42,7 @@ export class OrdersListPage {
   }
 
   makeNewBill():void{
-    this.navCtrl.push(this.singleOrderPage);
+    this.navCtrl.push('SingleOrderPage');
   }
   
   editBill(billToEdit:Bill):void{

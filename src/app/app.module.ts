@@ -10,9 +10,6 @@ import { IonicStorageModule  } from '@ionic/storage';
 //pages
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
-import { OrdersListPage } from '../pages/orders-list/orders-list';
-import { SettingsPage } from '../pages/settings/settings';
-import { SingleOrderPage } from '../pages/single-order/single-order';
 
 //providers
 import { ConnectivityProvider } from '../providers/connectivity/connectivity';
@@ -33,10 +30,7 @@ import { DataProvider } from '../providers/data/data';
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    HomePage,
-    OrdersListPage,
-    SettingsPage,
-    SingleOrderPage
+    HomePage
   ],
   providers: [
     StatusBar,

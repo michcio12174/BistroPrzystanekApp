@@ -4,7 +4,6 @@ import { Bill } from "../../classes/bill"
 import { Product } from "../../classes/product"
 import { ProductType } from "../../classes/productType"
 import { DataProvider } from '../../providers/data/data'
-import { OrdersListPage } from "../orders-list/orders-list"
 import { ToastController } from 'ionic-angular';//debug
 
 @IonicPage()
@@ -37,9 +36,6 @@ export class SingleOrderPage {
 
   //represents the current order
   private currentOrder:Bill = new Bill;
-
-  //where to go after bill is posted
-  private pageAfterPostingBill = OrdersListPage;
 
 
   constructor(
@@ -150,7 +146,7 @@ export class SingleOrderPage {
       if(this.billFromScratch){//we were creating new order
         this.dataProvider.postBill(this.currentOrder).then(response =>{
         if(response)
-          this.navCtrl.setRoot(this.pageAfterPostingBill);
+          this.navCtrl.setRoot('OrdersListPage');
         });
       }
 
@@ -158,7 +154,7 @@ export class SingleOrderPage {
         
         this.dataProvider.updateBill(this.currentOrder).then(response =>{
         if(response)
-          this.navCtrl.setRoot(this.pageAfterPostingBill);
+          this.navCtrl.setRoot('OrdersListPage');
         });
       }
       
