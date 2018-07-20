@@ -19,17 +19,10 @@ import { ConnectivityProvider } from '../providers/connectivity/connectivity';
 import { LoginProvider } from '../providers/login/login';
 import { DataProvider } from '../providers/data/data';
 
-//custom pipes
-import { ProductFilterPipe } from '../classes/productFilter'
-
 @NgModule({
   declarations: [
     MyApp,
-    HomePage,
-    OrdersListPage,
-    SettingsPage,
-    SingleOrderPage,
-    ProductFilterPipe
+    HomePage
   ],
   imports: [
     BrowserModule,
