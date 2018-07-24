@@ -114,19 +114,35 @@ export class SingleOrderPage {
   }
 
   addProduct(productToAdd:Product, amount:number):void{
-    let index = this.currentOrder.products.indexOf(productToAdd);//find index
+    //I need to iterate the amount only once as javascript arrays hold references
+    //therefore reference to product in allProducts ponts to the same thing as one pushed to currentOrder.products
+    //in fact the passed product is reference takem from products array, so I can iterate its amount directly
+    productToAdd.amount += amount;
 
-    this.currentOrder.products[index].amount += amount;
+    //managing list of products in order
+    let index = this.currentOrder.products.findIndex(x => x.id == productToAdd.id);
+    if(index < 0) this.currentOrder.products.push(productToAdd);
+
+    //managing price
     this.sumOfPrices += productToAdd.cost * amount;
   }
 
   removeProduct(productToRemove:Product, amount:number):void{
-    let index = this.currentOrder.products.indexOf(productToRemove);//find index
+    //see comment in function above
+    productToRemove.amount -= amount;
 
+    //do we need to change the price and remove product from bill?
+    let index = this.currentOrder.products.findIndex(x => x.id == productToRemove.id);
     if(index >= 0){
-      this.currentOrder.products[index].amount -= amount;
+      //do we need to remove product from array?
+      if(productToRemove.amount <= 0) {
+        productToRemove.amount = 0;
+        this.currentOrder.products.splice(index, 1);
+      }
 
+      //changing price
       this.sumOfPrices -= productToRemove.cost * amount;
+      if(this.sumOfPrices < 0) this.sumOfPrices = 0;
     }
   }
 
