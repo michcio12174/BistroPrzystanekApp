@@ -5,11 +5,12 @@ import { Product } from "../../classes/product"
 import { ProductType } from "../../classes/productType"
 import { DataProvider } from '../../providers/data/data'
 import { ToastController } from 'ionic-angular';//debug
+import { Autosize } from 'ionic2-autosize';
 
 @IonicPage()
 @Component({
   selector: 'page-single-order',
-  templateUrl: 'single-order.html',
+  templateUrl: 'single-order.html'
 })
 export class SingleOrderPage {
 
@@ -17,11 +18,6 @@ export class SingleOrderPage {
   private allProducts: Product[] = new Array<Product>();
   //all product types
   private productTypes: ProductType[] = new Array<ProductType>();
-  //products count - 
-  //an index in an array corresponds to the product id and number corresponds to how many was ordered
-  //indexes/ids are offset by one - id 1 is in the 0th element of the array
-  //remeber whan using it!
-  private productCount: number[];
 
   private sumOfPrices: number = 0;
 
@@ -57,32 +53,27 @@ export class SingleOrderPage {
       this.dataProvider.getProducts().then(products =>{
         this.allProducts = products;
 
-        let maxId:number = 0;
-
-        //check what is the largest id number, so that productCount will be able to count all ids 
-        for (let currentProduct of products){
-          if(currentProduct.id > maxId) maxId = currentProduct.id;
-        }
-
-        this.productCount = new Array<number>(maxId);
-        //zero the array
-        for(let i = 0; i < maxId; i++){
-          this.productCount[i] = 0;
-        }
-
         //check if we go from scratch or editing a bill
-        if(this.navParams.get('bill')) {//we have bill
+        
+        //we have bill
+        if(this.navParams.get('bill')) {
           this.billFromScratch = false;
 
           this.currentOrder = this.navParams.get('bill');
 
+          let index:number;
           for(let product of this.currentOrder.products){
-            this.productCount[product.id - 1] += 1;//adding to array that counts number of items
-            this.sumOfPrices += product.cost;
+            this.sumOfPrices += product.cost * product.amount;
+
+            //finding the products already in the order and increasing their amount according to the order
+            //in adding new product a amount from this.allProducts is displayed
+            index = this.allProducts.findIndex((x:Product) => x.id == product.id);
+            if(index >= 0) this.allProducts[index].amount = product.amount;
           }
         }
-
-        else {//from scratch
+        
+        //from scratch
+        else {
           this.billFromScratch = true;
           this.currentOrder = new Bill;
         }
@@ -122,21 +113,20 @@ export class SingleOrderPage {
     this.currentOrder.tableId = tableNumber;
   }
 
-  addProduct(productToAdd:Product):void{
-    this.productCount[productToAdd.id - 1] += 1;//adding to array that counts number of items
-    this.currentOrder.products.push(productToAdd);//adding to the order object
+  addProduct(productToAdd:Product, amount:number):void{
+    let index = this.currentOrder.products.indexOf(productToAdd);//find index
 
-    this.sumOfPrices += productToAdd.cost;
+    this.currentOrder.products[index].amount += amount;
+    this.sumOfPrices += productToAdd.cost * amount;
   }
 
-  removeProduct(productToRemove:Product):void{
-    if(this.productCount[productToRemove.id - 1] > 0){
-      this.productCount[productToRemove.id - 1] -= 1;//remove from counting array
+  removeProduct(productToRemove:Product, amount:number):void{
+    let index = this.currentOrder.products.indexOf(productToRemove);//find index
 
-      let index = this.currentOrder.products.indexOf(productToRemove)//find index and remove
-      this.currentOrder.products.splice(index, 1);
-      
-    this.sumOfPrices -= productToRemove.cost;
+    if(index >= 0){
+      this.currentOrder.products[index].amount -= amount;
+
+      this.sumOfPrices -= productToRemove.cost * amount;
     }
   }
 

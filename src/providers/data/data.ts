@@ -52,7 +52,8 @@ export class DataProvider {
       'tableId': billToPost.tableId,
       'guestsNumber': billToPost.guestsNumber,
       'waiterUsername': billToPost.waiterUsername,
-      'productsIds': productsIds
+      'productsIds': productsIds,
+      'comment': billToPost.comment
     };
 
     return this.createHeader().then(header => {
@@ -247,7 +248,9 @@ export class DataProvider {
       return this.http.get<Product[]>(specificUrl, {headers:header}).toPromise()
       
       .then(
-        data => {return data}
+        data => {
+          for(let prod of data) prod.amount = 0; // we must zero them as satabase returns null
+          return data;}
         )
         .catch((err:HttpErrorResponse) => {
           this.displayErrorToast(err);
@@ -286,7 +289,6 @@ export class DataProvider {
         duration: 10000
       })
       toast.present();
-
     }
 
     else{

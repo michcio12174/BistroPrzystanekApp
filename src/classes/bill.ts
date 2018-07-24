@@ -6,4 +6,5 @@ export class Bill{
     guestsNumber:number = 0;
     waiterUsername:string = "-";
     products:Product[] = new Array<Product>(); //id produktów w zamówieniu
+    comment:String = "";
 }

@@ -170,8 +170,13 @@
       <ion-label><b>Koszt zamówienia: {{sumOfPrices | number : '1.2-2'}} zł</b></ion-label>
     </ion-item>
 
+    <ion-item>
+        <ion-label stacked>Komentarz do zamówienia:{{this.currentOrder.comment}}</ion-label>
+        <ion-textarea autosize [(ngModel)]="this.currentOrder.comment"></ion-textarea>
+    </ion-item>
+
     <ion-list text-center>
-  
+
       <button ion-button (click)="goToAddingProducts()">Dodaj produkt do tego zamówienia</button>
       <button ion-button (click)="addOrderToDatabase()">Zapisz zamówienie w systemie</button>
     
@@ -203,7 +208,7 @@
             <button ion-button (click)="removeProduct(product)" item-right padding>
               <ion-icon name="remove-circle"></ion-icon>
             </button>
-            <p item-right>{{productCount[product.id - 1]}}</p>
+            <p item-right>{{product.amount}}</p>
             <button ion-button (click)="addProduct(product)" item-right padding>
               <ion-icon name="add-circle" ></ion-icon>
             </button>
