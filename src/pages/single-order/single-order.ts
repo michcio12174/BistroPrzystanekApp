@@ -4,7 +4,7 @@ import { Bill } from "../../classes/bill"
 import { Product } from "../../classes/product"
 import { ProductType } from "../../classes/productType"
 import { DataProvider } from '../../providers/data/data'
-import { ToastController } from 'ionic-angular';//debug
+import { ToastController } from 'ionic-angular';
 import { Autosize } from 'ionic2-autosize';
 
 @IonicPage()
@@ -38,13 +38,13 @@ export class SingleOrderPage {
     public navCtrl: NavController, 
     public navParams: NavParams,
     public dataProvider:DataProvider,
-    private toastController: ToastController//debug
+    private toastController: ToastController
   ){}
 
   ionViewWillEnter(){
     this.showTableChoice = true;
     this.showCurrentOrder = false;
-    this.showCurrentOrder = false;
+    this.showAddingNewProduct = false;
 
     //get available products and their types
     this.dataProvider.getProductTypes().then(productTypes =>{
@@ -94,16 +94,15 @@ export class SingleOrderPage {
   }
 
   goToOrderOverview():void{
-    if(this.currentOrder.guestsNumber != 0 && this.currentOrder.tableId != 0)
-    {
+    if(this.currentOrder.products && this.currentOrder.products.length > 0){
       this.showTableChoice = false;
       this.showCurrentOrder = true;
       this.showAddingNewProduct = false;
     }
     else{
       let toast = this.toastController.create({
-        message: "Wybierz stolik i liczbę gości",
-        duration: 5000
+        message: "Zamówienie jest puste",
+        duration: 3000
       })
       toast.present();
     }
@@ -124,25 +123,36 @@ export class SingleOrderPage {
     if(index < 0) this.currentOrder.products.push(productToAdd);
 
     //managing price
-    this.sumOfPrices += productToAdd.cost * amount;
+    this.recalculatePrice();
   }
-
+  
+  //see comment in function above
   removeProduct(productToRemove:Product, amount:number):void{
-    //see comment in function above
-    productToRemove.amount -= amount;
 
-    //do we need to change the price and remove product from bill?
+    //check if product was included in the order
     let index = this.currentOrder.products.findIndex(x => x.id == productToRemove.id);
     if(index >= 0){
-      //do we need to remove product from array?
-      if(productToRemove.amount <= 0) {
-        productToRemove.amount = 0;
-        this.currentOrder.products.splice(index, 1);
-      }
+      //it was, decrease amount, else do nothing as amount was 0
+      productToRemove.amount -= amount;
 
-      //changing price
-      this.sumOfPrices -= productToRemove.cost * amount;
-      if(this.sumOfPrices < 0) this.sumOfPrices = 0;
+      //do we have negative value or 0?
+      if(productToRemove.amount <= 0){
+        //yes, remove the product from bill
+        this.currentOrder.products.splice(index, 1);
+
+        productToRemove.amount = 0;
+        
+        //managing price
+        this.recalculatePrice();
+      }
+    }
+  }
+
+  recalculatePrice():void{
+    this.sumOfPrices = 0;
+
+    for(let curProduct of this.currentOrder.products){
+      this.sumOfPrices += curProduct.amount * curProduct.cost;
     }
   }
 
@@ -168,7 +178,7 @@ export class SingleOrderPage {
     else{
       let toast = this.toastController.create({
         message: "Zamówienie jest puste",
-        duration: 5000
+        duration: 3000
       })
       toast.present();
     }

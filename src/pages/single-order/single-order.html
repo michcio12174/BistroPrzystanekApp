@@ -1,17 +1,13 @@
 <ion-header>
 
   <ion-navbar hideBackButton>
-    <ion-title>Zamówienie</ion-title>
+    <ion-title>Zamówienie: stolik {{currentOrder.tableId}}, {{currentOrder.guestsNumber}} gości</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 
 <ion-content padding>
-  <h6>Zamówienie: stolik {{currentOrder.tableId}}, {{currentOrder.guestsNumber}} gości</h6>
-  
-  <ion-list text-center *ngIf = '!showTableChoice && !showAddingNewProduct'><button ion-button (click)="goToTableChoice()">Zmień</button> </ion-list>
-
 
   <ion-list text-center *ngIf = 'showTableChoice'>
 
@@ -149,47 +145,19 @@
     </ion-grid>
 
  
-    <button ion-button color="secondary" (click)="goToOrderOverview()" *ngIf = 'this.currentOrder.guestsNumber != 0 && this.currentOrder.tableId != "0"'>
-      Przejdź dalej 
+    <button ion-button color="secondary" (click)="goToAddingProducts()" *ngIf = 'this.currentOrder.guestsNumber != 0 && this.currentOrder.tableId != "0"'>
+      Dodaj produkty
     </button>
 
   </ion-list>
 
 
-  <ion-list *ngIf = 'showCurrentOrder'>
-    
-    <ng-container *ngFor = "let product of this.currentOrder.products">
-      <ion-item>
-        <b>{{product.name}}</b>,
-        cena/szt: {{product.cost | number : '1.2-2'}} zł x {{product.amount | number : '1.0-0'}}
-      </ion-item>
-    </ng-container>
-   
-
-    <ion-item>
-      <ion-label><b>Koszt zamówienia: {{sumOfPrices | number : '1.2-2'}} zł</b></ion-label>
-    </ion-item>
-
-    <ion-item>
-        <ion-label stacked>Komentarz do zamówienia:</ion-label>
-        <ion-textarea autosize [(ngModel)]="this.currentOrder.comment"></ion-textarea>
-    </ion-item>
-
-    <ion-list text-center>
-
-      <button ion-button (click)="goToAddingProducts()">Dodaj produkt do tego zamówienia</button>
-      <button ion-button (click)="addOrderToDatabase()">Zapisz zamówienie w systemie</button>
-    
-    </ion-list>
-  </ion-list>
-  
-
   <div *ngIf = 'showAddingNewProduct' text-center>
 
     <h5>Menu</h5>
-
+  
     <ion-list *ngFor = "let productType of productTypes">
-
+  
       <ion-list-header (click)="productType.show = !productType.show">
         <b item-start>{{productType.name}}</b>
         <div item-end>
@@ -197,31 +165,77 @@
           <ion-icon *ngIf = "productType.show" name="remove"></ion-icon>
         </div>
       </ion-list-header>
-
+  
       <ion-item *ngIf = "productType.show">
-
+  
         <ion-list>
           <ion-item *ngFor = "let product of (allProducts | productFilter:productType.id)">
             <p text-wrap>{{product.name}}<br>
             {{product.cost | number : '1.2-2'}} zł</p>
 
-            <button ion-button (click)="removeProduct(product, 1)" item-right padding>
-              <ion-icon name="remove-circle"></ion-icon>
-            </button>
-            <p item-right>{{product.amount}}</p>
-            <button ion-button (click)="addProduct(product, 1)" item-right padding>
-              <ion-icon name="add-circle" ></ion-icon>
-            </button>
-         
+            <ng-container *ngIf = "productType.name == 'PIZZA'" item-end>
+              <button ion-button (click)="removeProduct(product, 1)" padding-vertical>
+                  <ion-icon name="remove-circle"></ion-icon>1
+              </button>
+              <button ion-button (click)="removeProduct(product, 0.5)" padding-vertical>
+                  <ion-icon name="remove-circle"></ion-icon>1/2
+              </button>
+              <p>{{product.amount}}</p>
+              <button ion-button (click)="addProduct(product, 0.5)" padding-vertical>
+                  <ion-icon name="add-circle" ></ion-icon>1/2
+              </button>
+              <button ion-button (click)="addProduct(product, 1)" padding-vertical>
+                  <ion-icon name="add-circle" ></ion-icon>1
+              </button>
+            </ng-container>
+
+            <ng-container *ngIf = "productType.name != 'PIZZA'" item-end>
+              <button ion-button (click)="removeProduct(product, 1)" padding>
+                <ion-icon name="remove-circle"></ion-icon>
+              </button>
+              <p>{{product.amount}}</p>
+              <button ion-button (click)="addProduct(product, 1)" padding>
+                <ion-icon name="add-circle" ></ion-icon>
+              </button>
+            </ng-container>
+            
           </ion-item>
         </ion-list>
-      
+        
+      </ion-item>
+  
+    </ion-list>
+    
+    <button ion-button (click)="goToOrderOverview()">Do podsumowania</button>
+  
+  </div>
+
+  <ng-container *ngIf = 'showCurrentOrder'>
+    
+    <ion-list>
+
+      <ion-list-header>
+        Zamówione produkty:
+      </ion-list-header>
+
+      <ion-item *ngFor = "let product of this.currentOrder.products">
+        <p text-wrap><b>{{product.name}}</b><br>
+        cena/szt: {{product.cost | number : '1.2-2'}} zł x {{product.amount | number : '1.0-1'}}</p>
       </ion-item>
 
     </ion-list>
+   
+    <h6>Koszt zamówienia: {{sumOfPrices | number : '1.2-2'}} zł</h6>
+
+    <ion-label stacked>Komentarz do zamówienia:</ion-label>
+    <ion-textarea autosize [(ngModel)]="this.currentOrder.comment" color="grey"></ion-textarea>
+
+    <div text-center>
+      <button ion-button (click)="goToTableChoice()">Zmień stolik/liczbę gości</button>
+      <button ion-button (click)="goToAddingProducts()">Zmień zamówone produkty</button>
+      <button ion-button (click)="addOrderToDatabase()">Zapisz zamówienie w systemie</button>
+    </div>
+    
+  </ng-container>
   
-    <button ion-button (click)="goToOrderOverview()">Wróć</button>
-
-  </div>
-
 </ion-content>

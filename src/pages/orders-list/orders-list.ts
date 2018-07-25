@@ -1,7 +1,5 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
-import { SettingsPage } from '../../pages/settings/settings'
-import { SingleOrderPage } from '../../pages/single-order/single-order';
 import { Bill } from '../../classes/bill';
 import { DataProvider } from '../../providers/data/data'
 import { LoginProvider } from '../../providers/login/login'
@@ -13,8 +11,6 @@ import { LoginProvider } from '../../providers/login/login'
 })
 export class OrdersListPage {
 
-  private settingsPage = SettingsPage;
-  private singleOrderPage = SingleOrderPage;
   private bills:Bill[];
   private username:string;
 
@@ -41,12 +37,16 @@ export class OrdersListPage {
     })
   }
 
+  goToOptions():void{
+    this.navCtrl.push('SettingsPage')
+  }
+  
   makeNewBill():void{
     this.navCtrl.push('SingleOrderPage');
   }
   
   editBill(billToEdit:Bill):void{
-    this.navCtrl.push(this.singleOrderPage,{bill: billToEdit});
+    this.navCtrl.push('SingleOrderPage', {bill: billToEdit});
   }
 
   //-----------------------------functions displaying popups-----------------------------
