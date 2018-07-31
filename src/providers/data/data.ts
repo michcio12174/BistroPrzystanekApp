@@ -4,17 +4,19 @@ import { Bill } from '../../classes/bill';
 import { Product } from '../../classes/product';
 import { ProductType } from '../../classes/productType';
 import { LoginProvider } from '../../providers/login/login';
-import { ToastController } from 'ionic-angular';
+import { ToastController, LoadingController, Loading } from 'ionic-angular';
 import { jsonpCallbackContext } from '../../../node_modules/@angular/common/http/src/module';
 
 @Injectable()
 export class DataProvider {
 
   private url:string = 'https://vast-harbor-51468.herokuapp.com/v1';
+  private spinner:Loading;
 
   constructor(public http: HttpClient,
     private loginProvider: LoginProvider,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private loadingCtrl: LoadingController
   ) {
   }
 
@@ -23,14 +25,19 @@ export class DataProvider {
 
     let specificUrl: string = this.url + "/bill/current/" + this.loginProvider.currentlyLoggedUser;
 
+    this.startSpinner('Pobieram listę rachunków...')
+
     return this.createHeader().then(header => {
 
       return this.http.get<Bill[]>(specificUrl, {headers:header}).toPromise()
-      
       .then(
-        data => {return data}
+        data => {
+          this.stopSpinner();
+          return data;
+        }
       )
       .catch((err:HttpErrorResponse) => {
+        this.stopSpinner()
         this.displayErrorToast(err);
 
         let emptyList:Bill[];
@@ -41,6 +48,8 @@ export class DataProvider {
 
   postBill(billToPost:Bill):Promise<boolean>{
     let specificUrl: string = this.url + "/bill/";
+
+    this.startSpinner('Zapisuję rachunek...');
 
     let productsIdsAndAmounts = new Object();
 
@@ -61,6 +70,7 @@ export class DataProvider {
 
       return this.http.post(specificUrl, JSON.stringify(billToPostProcessed), {headers:header, responseType: 'text'}).toPromise()
        .then((response:any) => {
+         this.stopSpinner();
          return true;
        })
 
@@ -83,6 +93,7 @@ export class DataProvider {
       //   }
       // })
       .catch((err:HttpErrorResponse) => {
+        this.stopSpinner();
         this.displayErrorToast(err);
         return false;
       });
@@ -91,6 +102,8 @@ export class DataProvider {
 
   updateBill(billToPut:Bill):Promise<boolean>{
     let specificUrl: string = this.url + "/bill";
+
+    this.startSpinner("Edytuję rachunek...");
 
     let productsIdsAndAmounts = new Object();
 
@@ -111,6 +124,7 @@ export class DataProvider {
 
       return this.http.put(specificUrl, JSON.stringify(billToPutProcessed), {headers:header, responseType: 'text'}).toPromise()
        .then((response:any) => {
+         this.stopSpinner();
          return true;
        })
 
@@ -133,6 +147,7 @@ export class DataProvider {
       //   }
       // })
       .catch((err:HttpErrorResponse) => {
+        this.stopSpinner();
         this.displayErrorToast(err);
         return false;
       });
@@ -142,11 +157,14 @@ export class DataProvider {
   cancelBill(billToCancel:Bill):Promise<boolean>{
     let specificUrl: string = this.url + "/bill/cancel/" + billToCancel.id;
 
+    this.startSpinner('Anuluję rachunek...');
+
     return this.createHeader().then(header => {
 
       return this.http.put(specificUrl, null, {headers:header, responseType: 'text'}).toPromise()
       .then((response:any) => { // fix to stop httpclient from parsing response with empty body
-          return true;
+        this.stopSpinner();
+        return true;
       })
 
       // return this.http.put(specificUrl, null, {headers:header}).toPromise()
@@ -173,6 +191,7 @@ export class DataProvider {
       //   }
       // })
       .catch((err:HttpErrorResponse) => {
+        this.stopSpinner();
         this.displayErrorToast(err);
         return false;
       });
@@ -182,11 +201,14 @@ export class DataProvider {
   closeBill(billToClose:Bill):Promise<boolean>{
     let specificUrl: string = this.url + "/bill/close/" + billToClose.id;
 
+    this.startSpinner('Zamukam rachunek...');
+
     return this.createHeader().then(header => {
 
       return this.http.put(specificUrl, null, {headers:header, responseType: 'text'}).toPromise()
       .then((response:any) => { // fix to stop httpclient from parsing response with empty body
-          return true;
+        this.stopSpinner();
+        return true;
       })
       
       //return this.http.put(specificUrl, null, {headers:header}).toPromise()
@@ -213,6 +235,7 @@ export class DataProvider {
       //   }
       // })
       .catch((err:HttpErrorResponse) => {
+        this.stopSpinner();
         this.displayErrorToast(err);
         return false;
       });
@@ -224,14 +247,20 @@ export class DataProvider {
 
     let specificUrl: string = this.url + "/product_type/";
 
+    this.startSpinner('Pobieram typy produktów...');
+
     return this.createHeader().then(header => {
 
       return this.http.get<ProductType[]>(specificUrl, {headers:header}).toPromise()
       
       .then(
-        data => {return data}
+        data => {
+          this.stopSpinner();
+          return data;
+        }
         )
         .catch((err:HttpErrorResponse) => {
+          this.stopSpinner();
           this.displayErrorToast(err);
 
           let emptyList:ProductType[];
@@ -244,16 +273,21 @@ export class DataProvider {
   getProducts():Promise<Product[]>{
     let specificUrl: string = this.url + "/products/";
 
+    this.startSpinner('Pobieram listę produktów...')
+
     return this.createHeader().then(header => {
 
       return this.http.get<Product[]>(specificUrl, {headers:header}).toPromise()
       
       .then(
         data => {
-          for(let prod of data) prod.amount = 0; // we must zero them as satabase returns null
-          return data;}
+          for(let prod of data) prod.amount = 0; // we must zero them as database returns null
+          this.stopSpinner();
+          return data;
+        }
         )
         .catch((err:HttpErrorResponse) => {
+          this.stopSpinner();
           this.displayErrorToast(err);
 
           let emptyList:Product[];
@@ -302,6 +336,19 @@ export class DataProvider {
       })
       toast.present();
     }
+  }
+
+  //---------------------------------------------------------------- spinner control ----------------------------------------------------------------
+  startSpinner(message:string):void{
+
+    this.spinner = this.loadingCtrl.create({
+      content: message
+    });
+    this.spinner.present();
+  }
+
+  stopSpinner():void{
+    this.spinner.dismiss();
   }
 
 }

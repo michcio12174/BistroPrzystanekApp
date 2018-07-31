@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { AuthResponse } from '../../classes/authResponse';
-import { ToastController } from 'ionic-angular';
+import { ToastController, LoadingController } from 'ionic-angular';
 
 @Injectable()
 export class LoginProvider {
@@ -14,7 +14,8 @@ export class LoginProvider {
 
   constructor(private http: HttpClient,
     private storage: Storage,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private loadingCtrl: LoadingController
   ) {
   }
 
@@ -33,6 +34,12 @@ export class LoginProvider {
       .set('username', enteredUsername.trim())
       .set('password', enteredPassword.trim());
 
+    //setting the loading spinner
+    let loading = this.loadingCtrl.create({
+      content: 'Loguję...'
+    });
+    loading.present();
+
     return this.http.post<AuthResponse>(specificUrl, body, {headers:myHeaders}).toPromise()
     .then(response => {
         
@@ -43,10 +50,12 @@ export class LoginProvider {
         
       this.currentlyLoggedUser = enteredUsername.trim();//zapamiętuję nazwę urzytkownika
 
+      loading.dismiss();
       return true;
         
      }).catch(error => {
       console.log(error);
+      loading.dismiss();
       return false;
      });
   }
@@ -87,9 +96,7 @@ export class LoginProvider {
 
         });
       }
-
       else return false
     });
   }
-
 }
