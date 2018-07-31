@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
 import { Bill } from '../../classes/bill';
+import { Product } from '../../classes/product';
 import { DataProvider } from '../../providers/data/data'
 import { LoginProvider } from '../../providers/login/login'
 
@@ -43,10 +44,6 @@ export class OrdersListPage {
   
   makeNewBill():void{
     this.navCtrl.push('SingleOrderPage');
-  }
-  
-  editBill(billToEdit:Bill):void{
-    this.navCtrl.push('SingleOrderPage', {bill: billToEdit});
   }
 
   //-----------------------------functions displaying popups-----------------------------
@@ -91,5 +88,28 @@ export class OrdersListPage {
     alert.present();
   }
 
-  
+  viewAlert(billToEdit:Bill):void{
+    let orderSummary:string = '';
+    for(let currentProcuct of billToEdit.products){
+      orderSummary += '&#x2022 ' + currentProcuct.name + ' x ' + currentProcuct.amount + '<br>';
+    }
+
+    let alert = this.alertCtrl.create({
+      title: 'Zamówienie ' + billToEdit.id ,
+      message: orderSummary,
+      buttons: [
+        {
+          text: 'Wróć',
+          role: 'cancel'
+        },
+        {
+          text: 'Edytuj',
+          handler: () => {
+            this.navCtrl.push('SingleOrderPage', {bill: billToEdit});
+          }
+        }
+      ]
+    });
+    alert.present();
+  }
 }
