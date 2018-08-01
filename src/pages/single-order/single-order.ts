@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
 import { Bill } from "../../classes/bill"
 import { Product } from "../../classes/product"
 import { ProductType } from "../../classes/productType"
@@ -38,7 +38,8 @@ export class SingleOrderPage {
     public navCtrl: NavController, 
     public navParams: NavParams,
     public dataProvider:DataProvider,
-    private toastController: ToastController
+    private toastController: ToastController,
+    public alertCtrl: AlertController
   ){}
 
   ionViewWillEnter(){
@@ -154,6 +155,33 @@ export class SingleOrderPage {
     for(let curProduct of this.currentOrder.products){
       this.sumOfPrices += curProduct.amount * curProduct.cost;
     }
+  }
+
+  showSummaryAlert():void{
+    let orderSummary:string = '';
+    for(let currentProcuct of this.currentOrder.products){
+      orderSummary += '&#x2022 ' + currentProcuct.name + ' x ' + currentProcuct.amount + '<br>';
+    }
+
+    let titleString:string = 'Nowe zamówienie';
+    if(this.currentOrder.id) titleString = 'Zamówienie ' + this.currentOrder.id;
+    let alert = this.alertCtrl.create({
+      title: titleString,
+      message: orderSummary,
+      buttons: [
+        {
+          text: 'Wróć',
+          role: 'cancel'
+        },
+        {
+          text: 'Zapisz',
+          handler: () => {
+            this.addOrderToDatabase();
+          }
+        }
+      ]
+    });
+    alert.present();
   }
 
   addOrderToDatabase():void{
