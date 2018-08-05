@@ -1,7 +1,7 @@
+import { HomePage } from './../home/home';
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController } from 'ionic-angular';
 import { LoginProvider } from '../../providers/login/login';
-import { HomePage } from '../home/home'
 
 @IonicPage()
 @Component({
@@ -14,12 +14,11 @@ export class SettingsPage {
 
   constructor(
     public navCtrl: NavController, 
-    public navParams: NavParams,
     public loginProvider: LoginProvider) {
   }
 
   logOut():void{
     this.loginProvider.logOut();
-    this.navCtrl.setRoot('HomePage');
+    this.navCtrl.setRoot(this.homePage);
   }
 }
