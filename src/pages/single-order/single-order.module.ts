@@ -7,7 +7,6 @@ import { Autosize } from 'ionic2-autosize';
 @NgModule({
   declarations: [
     SingleOrderPage,
-    Autosize
   ],
   imports: [
     IonicPageModule.forChild(SingleOrderPage),

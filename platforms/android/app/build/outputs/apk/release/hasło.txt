@@ -1,1 +1,4 @@
 ZgierzRulesForever
+
+Komendy:
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore my-release-key.jks app-release-unsigned.apk my-alias
