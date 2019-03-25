@@ -1,0 +1,593 @@
+swagger: '2.0'
+info:
+  description: This is a server for GOP Waiter
+  version: 1.0.0
+  title: GOP Waiter Api
+  termsOfService: '---'
+  contact:
+    email: kubawalczak@gmail.com
+host: 'localhost:8080'
+basePath: /v1
+tags:
+  - name: bill
+    description: Requests connected to bill
+  - name: authentication
+    description: Requests connected to user's authentication
+  - name: product
+    description: Requests connected to products
+  - name: product_type
+    description: Requests connected to product types
+schemes:
+  - https
+paths:
+  /oauth/token:
+    post:
+      tags:
+        - authentication
+      summary: Collect token with basic authentication
+      consumes:
+        - application/x-www-urlencoded
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: Order object
+          required: true
+          schema:
+            $ref: '#/definitions/Auth'
+      responses:
+        '200':
+          description: Token generater
+          schema:
+            $ref: '#/definitions/AuthResponse'
+        '400':
+          description: Bad request
+  /bill:
+    post:
+      tags:
+        - bill
+      summary: Persists bill in the database
+      description: ''
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: header
+          name: Company-id
+          type: integer
+          format: int64
+          description: Identifier of the company for the global DB
+          required: true
+        - in: body
+          name: body
+          description: Bill object
+          required: true
+          schema:
+            $ref: '#/definitions/Bill'
+      responses:
+        '200':
+          description: Bill was stored
+        '400':
+          description: Invalid input message
+      security:
+        - gop_auth:
+            - gop
+    get:
+      tags:
+        - bill
+      summary: 'Get all '
+      description: ''
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: header
+          name: Company-id
+          type: integer
+          format: int64
+          description: Identifier of the company for the global DB
+          required: true
+      responses:
+        '200':
+          description: The found orders
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/BillDto'
+        '400':
+          description: Invalid input message
+      security:
+        - gop_auth:
+            - gop
+    put:
+      tags:
+        - bill
+      summary: Update bill in the database
+      description: ''
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: header
+          name: Company-id
+          type: integer
+          format: int64
+          description: Identifier of the company for the global DB
+          required: true
+        - in: body
+          name: body
+          description: Bill object to update with set ID
+          required: true
+          schema:
+            $ref: '#/definitions/Bill'
+      responses:
+        '200':
+          description: Bill was updated
+        '400':
+          description: Invalid input message
+      security:
+        - gop_auth:
+            - gop
+  '/bill/cancel/{billId}':
+    put:
+      tags:
+        - bill
+      summary: Changes the status of the bill to CANCELED
+      description: ''
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: header
+          name: Company-id
+          type: integer
+          format: int64
+          description: Identifier of the company for the global DB
+          required: true
+        - in: path
+          name: billId
+          description: ID of the bill to cancel
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: Bill was updated
+        '400':
+          description: Invalid input message
+      security:
+        - gop_auth:
+            - gop
+  '/bill/close/{billId}':
+    put:
+      tags:
+        - bill
+      summary: Summarizes and closes the bill with the given ID. Prints a bill
+      description: ''
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: header
+          name: Company-id
+          type: integer
+          format: int64
+          description: Identifier of the company for the global DB
+          required: true
+        - in: path
+          name: billId
+          description: ID of the bill to cancel
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: Bill was closed
+        '400':
+          description: Invalid input message
+      security:
+        - gop_auth:
+            - gop
+  '/bill/current/{username}':
+    get:
+      tags:
+        - bill
+      summary: Returns open bills for the waiter
+      description: ''
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: header
+          name: Company-id
+          type: integer
+          format: int64
+          description: Identifier of the company for the global DB
+          required: true
+        - in: path
+          name: username
+          description: The waiter's username
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Open bills for the waiter
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/BillDto'
+        '400':
+          description: Invalid input message
+      security:
+        - gop_auth:
+            - gop
+  /bill/count/today:
+    get:
+      tags:
+        - bill
+      summary: Returns number of issued bills (finished)
+      description: ''
+      produces:
+        - application/json
+      parameters:
+        - in: header
+          name: Company-id
+          type: integer
+          format: int64
+          description: Identifier of the company for the global DB
+          required: true
+      responses:
+        '200':
+          description: Number of today's closed bills
+          schema:
+            type: integer
+        '400':
+          description: Invalid input message
+      security:
+        - gop_auth:
+            - gop
+  '/bill/count/{from}/{to}':
+    get:
+      tags:
+        - bill
+      summary: Returns number of issued bills (finished) from the expected period
+      description: ''
+      produces:
+        - application/json
+      parameters:
+        - in: header
+          name: Company-id
+          type: integer
+          format: int64
+          description: Identifier of the company for the global DB
+          required: true
+        - in: path
+          name: from
+          type: string
+          format: date
+          required: true
+          description: Period start date in the format- dd-MM-yyyy
+        - in: path
+          name: to
+          type: string
+          format: date
+          required: true
+          description: Period end date in the format- dd-MM-yyyy
+      responses:
+        '200':
+          description: Number of closed bills within the period
+          schema:
+            type: integer
+        '400':
+          description: Invalid input message
+      security:
+        - gop_auth:
+            - gop
+  /product/:
+    post:
+      tags:
+        - product
+      summary: Create a new product
+      description: ''
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: header
+          name: Company-id
+          type: integer
+          format: int64
+          description: Identifier of the company for the global DB
+          required: true
+        - in: body
+          name: body
+          required: true
+          description: A product to create
+          schema:
+            $ref: '#/definitions/Product'
+      responses:
+        '200':
+          description: Product created successfuly
+        '400':
+          description: Invalid input message
+      security:
+        - gop_auth:
+            - gop
+    get:
+      tags:
+        - product
+      summary: Get all products
+      description: ''
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: header
+          name: Company-id
+          type: integer
+          format: int64
+          description: Identifier of the company for the global DB
+          required: true
+      responses:
+        '200':
+          description: The found products
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ProductDto'
+        '400':
+          description: Invalid input message
+      security:
+        - gop_auth:
+            - gop
+  '/product/price/{id}/{price}':
+    put:
+      tags:
+        - product
+      summary: Update product type
+      description: ''
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: header
+          name: Company-id
+          type: integer
+          format: int64
+          description: Identifier of the company for the global DB
+          required: true
+        - in: path
+          name: id
+          type: integer
+          format: int64
+          required: true
+          description: Id of the product for price update
+        - in: path
+          name: price
+          type: number
+          required: true
+          description: New price to set
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Invalid input message
+      security:
+        - gop_auth:
+            - gop
+  /product_type/:
+    post:
+      tags:
+        - product_type
+      summary: Create a new product type
+      description: ''
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: header
+          name: Company-id
+          type: integer
+          format: int64
+          description: Identifier of the company for the global DB
+          required: true
+        - in: body
+          name: body
+          required: true
+          description: A product to create
+          schema:
+            $ref: '#/definitions/ProductType'
+      responses:
+        '200':
+          description: Product type created successfuly
+        '400':
+          description: Invalid input message
+      security:
+        - gop_auth:
+            - gop
+    get:
+      tags:
+        - product_type
+      summary: Get all product types
+      description: ''
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: header
+          name: Company-id
+          type: integer
+          format: int64
+          description: Identifier of the company for the global DB
+          required: true
+      responses:
+        '200':
+          description: The found product types
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ProductTypeDto'
+        '400':
+          description: Invalid input message
+      security:
+        - gop_auth:
+            - gop
+securityDefinitions:
+  gop_auth:
+    type: oauth2
+    authorizationUrl: 'http://petstore.swagger.io/oauth/dialog'
+    flow: implicit
+    scopes:
+      gop: access to API
+  api_key:
+    type: apiKey
+    name: api_key
+    in: header
+definitions:
+  Bill:
+    type: object
+    properties:
+      tableId:
+        type: string
+        description: Table identifier
+      guestsNumber:
+        type: integer
+        description: Number of guests at the table
+      waiterUsername:
+        type: string
+        description: Username of the waiter handling this table
+      products:
+        type: array
+        items:
+          type: integer
+          format: int64
+          description: Identifiers of the products in DB
+  Product:
+    type: object
+    properties:
+      name:
+        type: string
+      price:
+        type: number
+        format: float
+      typeId:
+        type: integer
+        format: int64
+        description: Id of the type the product belongs to
+  Auth:
+    type: object
+    properties:
+      grant_type:
+        type: string
+        description: Always type 'password'
+      username:
+        type: string
+      password:
+        type: string
+  AuthResponse:
+    type: object
+    properties:
+      access_token:
+        type: string
+        description: Bearer token for OAuth2
+      token_type:
+        type: string
+        description: Token type- bearer
+      refresh_token:
+        type: string
+      expires_in:
+        type: integer
+        format: int64
+      scope:
+        type: string
+        description: Scope of the token read write
+      jti:
+        type: string
+  BillDto:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      companyId:
+        type: integer
+        format: int64
+      startTime:
+        type: integer
+        format: int64
+        description: Timestamp of starting serving
+      endTime:
+        type: integer
+        format: int64
+        description: Timestamp of ending serving
+      status:
+        enum:
+          - IN_PROGRESS
+          - CLOSED
+          - CANCELED
+      products:
+        type: array
+        items:
+          $ref: '#/definitions/ProductDto'
+      date:
+        type: string
+        description: Day of the bill
+      price:
+        type: number
+        description: Value of the bill
+      waiterId:
+        type: integer
+        format: int64
+        description: ID of the waiter handling the bill
+  ProductDto:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      companyId:
+        type: integer
+        format: int64
+      name:
+        type: string
+      cost:
+        type: number
+      typeId:
+        type: integer
+        format: int64
+        description: Reference to the type
+  ProductTypeDto:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      companyId:
+        type: integer
+        format: int64
+      code:
+        type: string
+      name:
+        type: string
+  ProductType:
+    type: object
+    properties:
+      code:
+        type: string
+      name:
+        type: string
+externalDocs:
+  description: Find out more about Swagger
+  url: 'http://swagger.io'
